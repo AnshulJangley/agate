@@ -30,10 +30,10 @@ logging.basicConfig(
         logging.StreamHandler()
     ]
 )
-logger = logging.getLogger("PetrolQ")
+logger = logging.getLogger("AGATE")
 
-# --- PETROLQ PROJECT CONFIGURATION ---
-# Target PetrolQ Fields for this project
+# --- AGATE PROJECT CONFIGURATION ---
+# Target AGATE Fields for this project
 PROJECT_FIELDS = ["Baghjan", "Naharkatiya", "Moran", "Digboi", "Duliajan", "Makum"]
 
 # --- DRILLING & GEOLOGICAL ALIAS MAPPING ---

@@ -8,4 +8,10 @@ venv = "fresh_venv"
 
 [tool.pytest.ini_options]
 pythonpath = ["backend"]
+# Pin collection to the paths that actually hold tests, so it can never wander
+# into the repo root again (AGATE_HANDOFF.md section 7.9: a root-level
+# test_*.py script fired a live upload at import time during collection).
+# These four entries are exactly the 56 tests collected today - "tests" alone
+# would silently drop the 12 tests under backend/ and scripts/.
+testpaths = ["tests", "backend/tests", "backend/test_rag.py", "scripts/test_offline.py"]
 

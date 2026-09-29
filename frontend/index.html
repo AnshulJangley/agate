@@ -2,18 +2,20 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Cpath d='M16 2L4 26H28L16 2Z' stroke='%2306B6D4' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='18' r='3.5' fill='%23F59E0B'/%3E%3Cpath d='M16 2V26M10 14H22M7 20H25' stroke='%2306B6D4' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Cpath d='M16 2L4 26H28L16 2Z' stroke='%23A6A6A6' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='18' r='3.5' fill='%23B1B1B1'/%3E%3Cpath d='M16 2V26M10 14H22M7 20H25' stroke='%23A6A6A6' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="theme-color" content="#070b14" />
-    <meta name="description" content="PetrolQ - Autonomous Drilling Risk Prediction & Subsurface Intelligence Platform. Real-time predictive telemetry, multi-hazard ML, and offset well correlation." />
-    <title>PetrolQ | Autonomous Drilling Risk & Subsurface Intelligence Platform</title>
+    <meta name="theme-color" content="#0B0B0B" />
+    <meta name="description" content="AGATE - Autonomous Drilling Risk Prediction & Subsurface Intelligence Platform. Real-time predictive telemetry, multi-hazard ML, and offset well correlation." />
+    <title>AGATE | Autonomous Drilling Risk & Subsurface Intelligence Platform</title>
 
-    <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+    <!-- One family only. Space Grotesk and JetBrains Mono were dropped: the
+         Tailwind config now aliases font-display and font-mono to the sans
+         stack, so those two would download and never render. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   </head>
-  <body class="bg-[#070b14] text-slate-100 antialiased selection:bg-cyan-500/30 selection:text-cyan-200">
+  <body class="bg-[#0B0B0B] text-slate-100 antialiased selection:bg-slate-500/30 selection:text-slate-200">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

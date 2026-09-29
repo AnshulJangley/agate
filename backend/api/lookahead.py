@@ -14,85 +14,85 @@ router = APIRouter()
 # Field & Well-specific formation top specifications for the Upper Assam Shelf Basin
 WELL_FORMATION_HORIZONS: Dict[str, List[Dict[str, Any]]] = {
     "OIL-BAGHJAN-1": [
-        {"name": "Tipam Sandstone", "tvd_top": 1200.0, "color": "#EAB308", "lithology": "Permeable Sandstone / Freshwater Aquifer", "primary_risk": "Seepage & Differential Sticking"},
-        {"name": "Barail Formation", "tvd_top": 2400.0, "color": "#F97316", "lithology": "Overpressured Sandstone-Shale Sequence", "primary_risk": "Gas Kick & Severe Lost Circulation"},
-        {"name": "Kopili Formation", "tvd_top": 2950.0, "color": "#A855F7", "lithology": "Deep Marine Fissile Shale", "primary_risk": "Shale Swelling & Tight Hole / Packoff"}
+        {"name": "Tipam Sandstone", "tvd_top": 1200.0, "color": "#BBBBBB", "lithology": "Permeable Sandstone / Freshwater Aquifer", "primary_risk": "Seepage & Differential Sticking"},
+        {"name": "Barail Formation", "tvd_top": 2400.0, "color": "#9A9A9A", "lithology": "Overpressured Sandstone-Shale Sequence", "primary_risk": "Gas Kick & Severe Lost Circulation"},
+        {"name": "Kopili Formation", "tvd_top": 2950.0, "color": "#808080", "lithology": "Deep Marine Fissile Shale", "primary_risk": "Shale Swelling & Tight Hole / Packoff"}
     ],
     "OIL-BAGHJAN-4": [
-        {"name": "Tipam Sandstone", "tvd_top": 1215.0, "color": "#EAB308", "lithology": "Permeable Sandstone / Freshwater Aquifer", "primary_risk": "Differential Sticking"},
-        {"name": "Barail Formation", "tvd_top": 2420.0, "color": "#F97316", "lithology": "Overpressured Gas Sandstone & Coal Sequence", "primary_risk": "Gas Kick & Severe Lost Circulation"},
-        {"name": "Kopili Formation", "tvd_top": 2965.0, "color": "#A855F7", "lithology": "Deep Marine Fissile Shale", "primary_risk": "Packoff & Tight Pull"}
+        {"name": "Tipam Sandstone", "tvd_top": 1215.0, "color": "#BBBBBB", "lithology": "Permeable Sandstone / Freshwater Aquifer", "primary_risk": "Differential Sticking"},
+        {"name": "Barail Formation", "tvd_top": 2420.0, "color": "#9A9A9A", "lithology": "Overpressured Gas Sandstone & Coal Sequence", "primary_risk": "Gas Kick & Severe Lost Circulation"},
+        {"name": "Kopili Formation", "tvd_top": 2965.0, "color": "#808080", "lithology": "Deep Marine Fissile Shale", "primary_risk": "Packoff & Tight Pull"}
     ],
     "OIL-NAHARKATIYA-1": [
-        {"name": "Tipam Sandstone", "tvd_top": 1050.0, "color": "#EAB308", "lithology": "Permeable Coarse Sandstone", "primary_risk": "Differential Sticking"},
-        {"name": "Barail Formation", "tvd_top": 2040.0, "color": "#F97316", "lithology": "Sand-Shale Alternations with Coal Streaks", "primary_risk": "Gas Kick & Wellbore Instability"},
-        {"name": "Kopili Formation", "tvd_top": 2820.0, "color": "#A855F7", "lithology": "Fissile Splintery Shales", "primary_risk": "Severe Lost Circulation & Packoff"}
+        {"name": "Tipam Sandstone", "tvd_top": 1050.0, "color": "#BBBBBB", "lithology": "Permeable Coarse Sandstone", "primary_risk": "Differential Sticking"},
+        {"name": "Barail Formation", "tvd_top": 2040.0, "color": "#9A9A9A", "lithology": "Sand-Shale Alternations with Coal Streaks", "primary_risk": "Gas Kick & Wellbore Instability"},
+        {"name": "Kopili Formation", "tvd_top": 2820.0, "color": "#808080", "lithology": "Fissile Splintery Shales", "primary_risk": "Severe Lost Circulation & Packoff"}
     ],
     "OIL-MORAN-1": [
-        {"name": "Tipam Sandstone", "tvd_top": 1420.0, "color": "#EAB308", "lithology": "Massive Bedded Sandstone", "primary_risk": "Loss of Circulation"},
-        {"name": "Barail Formation", "tvd_top": 2580.0, "color": "#F97316", "lithology": "Interbedded Sandstones & Carbonaceous Shale", "primary_risk": "High Pore Pressure Kick & Tight Hole"},
-        {"name": "Kopili Formation", "tvd_top": 3080.0, "color": "#A855F7", "lithology": "Dense Overpressured Marine Shale", "primary_risk": "Differential & Mechanical Sticking"}
+        {"name": "Tipam Sandstone", "tvd_top": 1420.0, "color": "#BBBBBB", "lithology": "Massive Bedded Sandstone", "primary_risk": "Loss of Circulation"},
+        {"name": "Barail Formation", "tvd_top": 2580.0, "color": "#9A9A9A", "lithology": "Interbedded Sandstones & Carbonaceous Shale", "primary_risk": "High Pore Pressure Kick & Tight Hole"},
+        {"name": "Kopili Formation", "tvd_top": 3080.0, "color": "#808080", "lithology": "Dense Overpressured Marine Shale", "primary_risk": "Differential & Mechanical Sticking"}
     ],
     "OIL-DIKOM-1": [
-        {"name": "Tipam Sandstone", "tvd_top": 1160.0, "color": "#EAB308", "lithology": "Channel Sandstone with Siltstones", "primary_risk": "Mud Loss & Seepage"},
-        {"name": "Barail Formation", "tvd_top": 2240.0, "color": "#F97316", "lithology": "Oligocene Sandstone Reservoirs", "primary_risk": "Kick & Fluid Breakout"},
-        {"name": "Kopili Formation", "tvd_top": 2620.0, "color": "#A855F7", "lithology": "Calcareous Shale and Siltstone", "primary_risk": "Lost Circulation"}
+        {"name": "Tipam Sandstone", "tvd_top": 1160.0, "color": "#BBBBBB", "lithology": "Channel Sandstone with Siltstones", "primary_risk": "Mud Loss & Seepage"},
+        {"name": "Barail Formation", "tvd_top": 2240.0, "color": "#9A9A9A", "lithology": "Oligocene Sandstone Reservoirs", "primary_risk": "Kick & Fluid Breakout"},
+        {"name": "Kopili Formation", "tvd_top": 2620.0, "color": "#808080", "lithology": "Calcareous Shale and Siltstone", "primary_risk": "Lost Circulation"}
     ],
     "OIL-TENGAKHAT-1": [
-        {"name": "Tipam Sandstone", "tvd_top": 1100.0, "color": "#EAB308", "lithology": "Sub-surface Aquifer Sand", "primary_risk": "Differential Sticking"},
-        {"name": "Barail Formation", "tvd_top": 2120.0, "color": "#F97316", "lithology": "Barail Main Sand Interval", "primary_risk": "Gas Influx"},
-        {"name": "Kopili Formation", "tvd_top": 2780.0, "color": "#A855F7", "lithology": "Swelling & Sloughing Shale", "primary_risk": "Tight Pull & Packoff"}
+        {"name": "Tipam Sandstone", "tvd_top": 1100.0, "color": "#BBBBBB", "lithology": "Sub-surface Aquifer Sand", "primary_risk": "Differential Sticking"},
+        {"name": "Barail Formation", "tvd_top": 2120.0, "color": "#9A9A9A", "lithology": "Barail Main Sand Interval", "primary_risk": "Gas Influx"},
+        {"name": "Kopili Formation", "tvd_top": 2780.0, "color": "#808080", "lithology": "Swelling & Sloughing Shale", "primary_risk": "Tight Pull & Packoff"}
     ],
     "OIL-KOTHALONI-1": [
-        {"name": "Tipam Sandstone", "tvd_top": 1250.0, "color": "#EAB308", "lithology": "Fluvial Sandstone", "primary_risk": "Filtrate Loss"},
-        {"name": "Barail Formation", "tvd_top": 2320.0, "color": "#F97316", "lithology": "Argillaceous Sandstone", "primary_risk": "Shale Instability & Kick"},
-        {"name": "Kopili Formation", "tvd_top": 2720.0, "color": "#A855F7", "lithology": "Fissile Shale", "primary_risk": "Pipe Sticking"}
+        {"name": "Tipam Sandstone", "tvd_top": 1250.0, "color": "#BBBBBB", "lithology": "Fluvial Sandstone", "primary_risk": "Filtrate Loss"},
+        {"name": "Barail Formation", "tvd_top": 2320.0, "color": "#9A9A9A", "lithology": "Argillaceous Sandstone", "primary_risk": "Shale Instability & Kick"},
+        {"name": "Kopili Formation", "tvd_top": 2720.0, "color": "#808080", "lithology": "Fissile Shale", "primary_risk": "Pipe Sticking"}
     ],
     "OIL-HAPJAN-1": [
-        {"name": "Tipam Sandstone", "tvd_top": 1280.0, "color": "#EAB308", "lithology": "Massive Aquifer Sands", "primary_risk": "Seepage Loss"},
-        {"name": "Barail Formation", "tvd_top": 2360.0, "color": "#F97316", "lithology": "Barail Coal-Shale Sequence", "primary_risk": "Gas Kick & Overpressure"},
-        {"name": "Kopili Formation", "tvd_top": 2890.0, "color": "#A855F7", "lithology": "Marine Mudstone", "primary_risk": "Wellbore Cavings"}
+        {"name": "Tipam Sandstone", "tvd_top": 1280.0, "color": "#BBBBBB", "lithology": "Massive Aquifer Sands", "primary_risk": "Seepage Loss"},
+        {"name": "Barail Formation", "tvd_top": 2360.0, "color": "#9A9A9A", "lithology": "Barail Coal-Shale Sequence", "primary_risk": "Gas Kick & Overpressure"},
+        {"name": "Kopili Formation", "tvd_top": 2890.0, "color": "#808080", "lithology": "Marine Mudstone", "primary_risk": "Wellbore Cavings"}
     ],
     "OIL-SHALMARI-1": [
-        {"name": "Tipam Sandstone", "tvd_top": 1140.0, "color": "#EAB308", "lithology": "Coarse Grained Sand", "primary_risk": "Differential Sticking"},
-        {"name": "Barail Formation", "tvd_top": 2210.0, "color": "#F97316", "lithology": "Laminated Sand-Shale", "primary_risk": "Lost Circulation"},
-        {"name": "Kopili Formation", "tvd_top": 2690.0, "color": "#A855F7", "lithology": "Compact Shale", "primary_risk": "Tight Hole"}
+        {"name": "Tipam Sandstone", "tvd_top": 1140.0, "color": "#BBBBBB", "lithology": "Coarse Grained Sand", "primary_risk": "Differential Sticking"},
+        {"name": "Barail Formation", "tvd_top": 2210.0, "color": "#9A9A9A", "lithology": "Laminated Sand-Shale", "primary_risk": "Lost Circulation"},
+        {"name": "Kopili Formation", "tvd_top": 2690.0, "color": "#808080", "lithology": "Compact Shale", "primary_risk": "Tight Hole"}
     ],
 }
 
 DEFAULT_HORIZONS: List[Dict[str, Any]] = [
-    {"name": "Tipam Sandstone", "tvd_top": 1200.0, "color": "#EAB308", "lithology": "Permeable Sandstone / Aquifer", "primary_risk": "Differential Sticking"},
-    {"name": "Barail Formation", "tvd_top": 2400.0, "color": "#F97316", "lithology": "Overpressured Sandstone-Shale", "primary_risk": "Gas Kick & Lost Circulation"},
-    {"name": "Kopili Formation", "tvd_top": 2950.0, "color": "#A855F7", "lithology": "Deep Marine Fissile Shale", "primary_risk": "Shale Swelling & Packoff"}
+    {"name": "Tipam Sandstone", "tvd_top": 1200.0, "color": "#BBBBBB", "lithology": "Permeable Sandstone / Aquifer", "primary_risk": "Differential Sticking"},
+    {"name": "Barail Formation", "tvd_top": 2400.0, "color": "#9A9A9A", "lithology": "Overpressured Sandstone-Shale", "primary_risk": "Gas Kick & Lost Circulation"},
+    {"name": "Kopili Formation", "tvd_top": 2950.0, "color": "#808080", "lithology": "Deep Marine Fissile Shale", "primary_risk": "Shale Swelling & Packoff"}
 ]
 
 RAJASTHAN_HORIZONS: List[Dict[str, Any]] = [
-    {"name": "Pariwar Formation", "tvd_top": 1200.0, "color": "#FCD34D", "lithology": "Abrasive Sandstone", "primary_risk": "Sand Abrasion & Bit Wear"},
-    {"name": "Baisakhi Formation", "tvd_top": 1800.0, "color": "#9CA3AF", "lithology": "Tight Shale / Siltstone", "primary_risk": "Tight Hole & Overpull"},
-    {"name": "Jodhpur Sandstone", "tvd_top": 2300.0, "color": "#D97706", "lithology": "Heavy Oil Sandstone", "primary_risk": "Viscous Drag & Differential Sticking"},
-    {"name": "Bilara Carbonates", "tvd_top": 2800.0, "color": "#94A3B8", "lithology": "Cavernous Dolomite/Limestone", "primary_risk": "Catastrophic Lost Circulation"}
+    {"name": "Pariwar Formation", "tvd_top": 1200.0, "color": "#D7D7D7", "lithology": "Abrasive Sandstone", "primary_risk": "Sand Abrasion & Bit Wear"},
+    {"name": "Baisakhi Formation", "tvd_top": 1800.0, "color": "#A2A2A2", "lithology": "Tight Shale / Siltstone", "primary_risk": "Tight Hole & Overpull"},
+    {"name": "Jodhpur Sandstone", "tvd_top": 2300.0, "color": "#909090", "lithology": "Heavy Oil Sandstone", "primary_risk": "Viscous Drag & Differential Sticking"},
+    {"name": "Bilara Carbonates", "tvd_top": 2800.0, "color": "#A2A2A2", "lithology": "Cavernous Dolomite/Limestone", "primary_risk": "Catastrophic Lost Circulation"}
 ]
 
 KG_HORIZONS: List[Dict[str, Any]] = [
-    {"name": "Shallow Marine Sediments", "tvd_top": 800.0, "color": "#38BDF8", "lithology": "Unconsolidated Silt/Hydrates", "primary_risk": "Shallow Water Flow / Slumping"},
-    {"name": "Godavari Gumbo", "tvd_top": 1800.0, "color": "#3F6212", "lithology": "Highly Reactive Gumbo Shale", "primary_risk": "Bit Balling & Annular Packing"},
-    {"name": "Ravva Formation", "tvd_top": 3200.0, "color": "#DC2626", "lithology": "Deep Turbidite Sandstone", "primary_risk": "Narrow PP-FG Margin & Gas Influx"},
-    {"name": "Cretaceous Basement", "tvd_top": 4200.0, "color": "#7C3AED", "lithology": "HPHT Fractured Shale-Sand", "primary_risk": "Overpressured HPHT Gas Kick"}
+    {"name": "Shallow Marine Sediments", "tvd_top": 800.0, "color": "#B1B1B1", "lithology": "Unconsolidated Silt/Hydrates", "primary_risk": "Shallow Water Flow / Slumping"},
+    {"name": "Godavari Gumbo", "tvd_top": 1800.0, "color": "#585858", "lithology": "Highly Reactive Gumbo Shale", "primary_risk": "Bit Balling & Annular Packing"},
+    {"name": "Ravva Formation", "tvd_top": 3200.0, "color": "#727272", "lithology": "Deep Turbidite Sandstone", "primary_risk": "Narrow PP-FG Margin & Gas Influx"},
+    {"name": "Cretaceous Basement", "tvd_top": 4200.0, "color": "#676767", "lithology": "HPHT Fractured Shale-Sand", "primary_risk": "Overpressured HPHT Gas Kick"}
 ]
 
 MIZORAM_HORIZONS: List[Dict[str, Any]] = [
-    {"name": "Bokabil Formation", "tvd_top": 1500.0, "color": "#F59E0B", "lithology": "Interbedded Sand-Shale", "primary_risk": "Borehole Ovalization"},
-    {"name": "Upper Bhuban", "tvd_top": 2500.0, "color": "#B45309", "lithology": "High Stress Marine Shale", "primary_risk": "Tectonic Stress Breakout"},
-    {"name": "Middle Bhuban", "tvd_top": 3400.0, "color": "#78350F", "lithology": "Steeply Dipping Hard Shales", "primary_risk": "Bedding Plane Splintering & Severe Stuck Pipe"},
-    {"name": "Disang Flysch", "tvd_top": 4100.0, "color": "#475569", "lithology": "Crushed Tectonic Flysch", "primary_risk": "Abnormal Pore Pressure & Severe Sloughing"}
+    {"name": "Bokabil Formation", "tvd_top": 1500.0, "color": "#B1B1B1", "lithology": "Interbedded Sand-Shale", "primary_risk": "Borehole Ovalization"},
+    {"name": "Upper Bhuban", "tvd_top": 2500.0, "color": "#6F6F6F", "lithology": "High Stress Marine Shale", "primary_risk": "Tectonic Stress Breakout"},
+    {"name": "Middle Bhuban", "tvd_top": 3400.0, "color": "#494949", "lithology": "Steeply Dipping Hard Shales", "primary_risk": "Bedding Plane Splintering & Severe Stuck Pipe"},
+    {"name": "Disang Flysch", "tvd_top": 4100.0, "color": "#545454", "lithology": "Crushed Tectonic Flysch", "primary_risk": "Abnormal Pore Pressure & Severe Sloughing"}
 ]
 
 NORTH_SEA_HORIZONS: List[Dict[str, Any]] = [
-    {"name": "Nordland Group", "tvd_top": 800.0, "color": "#38BDF8", "lithology": "Unconsolidated Sands & Clays", "primary_risk": "Shallow Gas Hazard"},
-    {"name": "Hordaland & Rogaland", "tvd_top": 1500.0, "color": "#60A5FA", "lithology": "Reactive Smectitic Shales", "primary_risk": "Borehole Swelling & Tight Hole"},
-    {"name": "Shetland Chalk Group", "tvd_top": 2100.0, "color": "#F59E0B", "lithology": "Dense Micro-crystalline Chalk", "primary_risk": "Mud Losses & Bit Chipping"},
-    {"name": "Draupne & Heather (Viking)", "tvd_top": 2550.0, "color": "#EF4444", "lithology": "Overpressured Organic Hot Shale", "primary_risk": "Kick Influx & Wellbore Instability"},
-    {"name": "Brent Group Sandstone", "tvd_top": 2800.0, "color": "#10B981", "lithology": "High Permeability Sand Reservoir", "primary_risk": "Differential Sticking in Depleted Zones"}
+    {"name": "Nordland Group", "tvd_top": 800.0, "color": "#B1B1B1", "lithology": "Unconsolidated Sands & Clays", "primary_risk": "Shallow Gas Hazard"},
+    {"name": "Hordaland & Rogaland", "tvd_top": 1500.0, "color": "#A2A2A2", "lithology": "Reactive Smectitic Shales", "primary_risk": "Borehole Swelling & Tight Hole"},
+    {"name": "Shetland Chalk Group", "tvd_top": 2100.0, "color": "#B1B1B1", "lithology": "Dense Micro-crystalline Chalk", "primary_risk": "Mud Losses & Bit Chipping"},
+    {"name": "Draupne & Heather (Viking)", "tvd_top": 2550.0, "color": "#848484", "lithology": "Overpressured Organic Hot Shale", "primary_risk": "Kick Influx & Wellbore Instability"},
+    {"name": "Brent Group Sandstone", "tvd_top": 2800.0, "color": "#A3A3A3", "lithology": "High Permeability Sand Reservoir", "primary_risk": "Differential Sticking in Depleted Zones"}
 ]
 
 # Baseline depths when opening each well if telemetry is not yet active

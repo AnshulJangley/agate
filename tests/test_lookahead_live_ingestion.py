@@ -11,6 +11,7 @@ if backend_path not in sys.path:
 from database import get_db
 from main import app
 from models import SyntheticEvent
+from nlp.config import EMBEDDING_DIM
 
 client = TestClient(app)
 
@@ -32,7 +33,7 @@ def test_live_ingestion_multi_hazard_lookahead():
         root_cause="Highly permeable depleted zone",
         mitigation_applied="Pumped LCM pill",
         npt_hours=12.0,
-        embedding=[0.0] * 384
+        embedding=[0.0] * EMBEDDING_DIM
     )
     
     event2 = SyntheticEvent(
@@ -45,7 +46,7 @@ def test_live_ingestion_multi_hazard_lookahead():
         root_cause="Unexpected overpressure sand",
         mitigation_applied="Shut-in and circulated kill weight mud",
         npt_hours=36.0,
-        embedding=[0.0] * 384
+        embedding=[0.0] * EMBEDDING_DIM
     )
     
     event3 = SyntheticEvent(
@@ -58,7 +59,7 @@ def test_live_ingestion_multi_hazard_lookahead():
         root_cause="High overbalance across permeable zone",
         mitigation_applied="Worked pipe and spotted freeing pill",
         npt_hours=24.0,
-        embedding=[0.0] * 384
+        embedding=[0.0] * EMBEDDING_DIM
     )
     
     # Configure mock to return our multi-event list
@@ -115,7 +116,7 @@ def test_cross_region_lookahead_boundaries():
         event_type="Severe Mud Loss",
         severity="HIGH",
         data_source="synthetic",
-        embedding=[0.0] * 384
+        embedding=[0.0] * EMBEDDING_DIM
     )
     
     ev_raj = SyntheticEvent(
@@ -126,7 +127,7 @@ def test_cross_region_lookahead_boundaries():
         event_type="Gas Kick",
         severity="CRITICAL",
         data_source="synthetic_uncalibrated",
-        embedding=[0.0] * 384
+        embedding=[0.0] * EMBEDDING_DIM
     )
     
     ev_kg = SyntheticEvent(
@@ -137,7 +138,7 @@ def test_cross_region_lookahead_boundaries():
         event_type="Tight Hole",
         severity="HIGH",
         data_source="synthetic_uncalibrated",
-        embedding=[0.0] * 384
+        embedding=[0.0] * EMBEDDING_DIM
     )
     
     ev_mizo = SyntheticEvent(
@@ -148,7 +149,7 @@ def test_cross_region_lookahead_boundaries():
         event_type="Packoff",
         severity="CRITICAL",
         data_source="synthetic_uncalibrated",
-        embedding=[0.0] * 384
+        embedding=[0.0] * EMBEDDING_DIM
     )
     
     mock_query = MagicMock()

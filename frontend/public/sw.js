@@ -1,9 +1,9 @@
 /**
- * PetrolQ Rig Edge - Service Worker
+ * AGATE Rig Edge - Service Worker
  * Ensures zero-downtime drilling continuity when satellite or rig network drops.
  */
 
-const CACHE_NAME = 'petrolq-rig-edge-v1';
+const CACHE_NAME = 'agate-rig-edge-v1';
 const PRECACHE_URLS = [
   '/',
   '/index.html',

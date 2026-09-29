@@ -260,22 +260,22 @@ export function generateOfflineBriefing(query = '', wellId = 'OIL-BAGHJAN-1') {
 export function evaluateOfflineLookahead(wellId = 'OIL-BAGHJAN-1', currentDepth = 2240.0, windowMeters = 250.0) {
   const wid = (wellId || '').toUpperCase();
   let horizons = [
-    { name: 'Tipam Sandstone', tvd_top: 1200.0, color: '#EAB308', lithology: 'Permeable Sandstone', primary_risk: 'Differential Sticking' },
-    { name: 'Barail Formation', tvd_top: 2400.0, color: '#F97316', lithology: 'Overpressured Sandstone & Coal', primary_risk: 'Abnormal Gas Kick & Well Control Risk' },
-    { name: 'Kopili Formation', tvd_top: 2950.0, color: '#A855F7', lithology: 'Deep Marine Fissile Shale', primary_risk: 'Shale Swelling & Tight Hole / Packoff' }
+    { name: 'Tipam Sandstone', tvd_top: 1200.0, color: '#BBBBBB', lithology: 'Permeable Sandstone', primary_risk: 'Differential Sticking' },
+    { name: 'Barail Formation', tvd_top: 2400.0, color: '#9A9A9A', lithology: 'Overpressured Sandstone & Coal', primary_risk: 'Abnormal Gas Kick & Well Control Risk' },
+    { name: 'Kopili Formation', tvd_top: 2950.0, color: '#808080', lithology: 'Deep Marine Fissile Shale', primary_risk: 'Shale Swelling & Tight Hole / Packoff' }
   ];
 
   if (wid.includes('RAJ')) {
     horizons = [
-      { name: 'Fatehgarh Sand', tvd_top: 1100.0, color: '#EAB308', lithology: 'Clean Fluvial Sand', primary_risk: 'Seepage Losses' },
-      { name: 'Barmer Hill', tvd_top: 1450.0, color: '#F97316', lithology: 'Siliceous Porcellanite Shale', primary_risk: 'Wellbore Instability' },
-      { name: 'Bilara Carbonates', tvd_top: 2300.0, color: '#EC4899', lithology: 'Cavernous Vuggy Dolomite', primary_risk: 'Total Lost Circulation' }
+      { name: 'Fatehgarh Sand', tvd_top: 1100.0, color: '#BBBBBB', lithology: 'Clean Fluvial Sand', primary_risk: 'Seepage Losses' },
+      { name: 'Barmer Hill', tvd_top: 1450.0, color: '#9A9A9A', lithology: 'Siliceous Porcellanite Shale', primary_risk: 'Wellbore Instability' },
+      { name: 'Bilara Carbonates', tvd_top: 2300.0, color: '#888888', lithology: 'Cavernous Vuggy Dolomite', primary_risk: 'Total Lost Circulation' }
     ];
   } else if (wid.includes('KG')) {
     horizons = [
-      { name: 'Godavari Clay', tvd_top: 1600.0, color: '#EAB308', lithology: 'Unconsolidated Clay', primary_risk: 'Shallow Water Flow' },
-      { name: 'Ravva Sand', tvd_top: 2200.0, color: '#F97316', lithology: 'Deltaic Sandstone', primary_risk: 'High Flow Rate Influx' },
-      { name: 'Pliocene Channel', tvd_top: 2900.0, color: '#EF4444', lithology: 'Deepwater Turbidite', primary_risk: 'HPHT Gas Kick' }
+      { name: 'Godavari Clay', tvd_top: 1600.0, color: '#BBBBBB', lithology: 'Unconsolidated Clay', primary_risk: 'Shallow Water Flow' },
+      { name: 'Ravva Sand', tvd_top: 2200.0, color: '#9A9A9A', lithology: 'Deltaic Sandstone', primary_risk: 'High Flow Rate Influx' },
+      { name: 'Pliocene Channel', tvd_top: 2900.0, color: '#848484', lithology: 'Deepwater Turbidite', primary_risk: 'HPHT Gas Kick' }
     ];
   }
 
@@ -369,20 +369,20 @@ export function evaluateOfflinePPFG(wellId = 'OIL-BAGHJAN-1', tvdMax = 3500.0) {
   }
 
   const casingShoes = wid.includes('RAJ') ? [
-    { casing_type: 'Conductor (24")', tvd_depth: 50.0, color: "#94A3B8" },
-    { casing_type: 'Surface Casing (16")', tvd_depth: 550.0, color: "#38BDF8" },
-    { casing_type: 'Intermediate Casing (10-3/4")', tvd_depth: 1750.0, color: "#F59E0B" },
-    { casing_type: 'Production Casing (7-5/8")', tvd_depth: 2750.0, color: "#10B981" }
+    { casing_type: 'Conductor (24")', tvd_depth: 50.0, color: "#A2A2A2" },
+    { casing_type: 'Surface Casing (16")', tvd_depth: 550.0, color: "#B1B1B1" },
+    { casing_type: 'Intermediate Casing (10-3/4")', tvd_depth: 1750.0, color: "#B1B1B1" },
+    { casing_type: 'Production Casing (7-5/8")', tvd_depth: 2750.0, color: "#A3A3A3" }
   ] : wid.includes('KG') ? [
-    { casing_type: 'Structural Casing (30")', tvd_depth: 120.0, color: "#94A3B8" },
-    { casing_type: 'Surface Casing (13-3/8")', tvd_depth: 1350.0, color: "#38BDF8" },
-    { casing_type: 'Intermediate Casing (9-5/8")', tvd_depth: 3100.0, color: "#F59E0B" },
-    { casing_type: 'Production Liner (7")', tvd_depth: 4450.0, color: "#10B981" }
+    { casing_type: 'Structural Casing (30")', tvd_depth: 120.0, color: "#A2A2A2" },
+    { casing_type: 'Surface Casing (13-3/8")', tvd_depth: 1350.0, color: "#B1B1B1" },
+    { casing_type: 'Intermediate Casing (9-5/8")', tvd_depth: 3100.0, color: "#B1B1B1" },
+    { casing_type: 'Production Liner (7")', tvd_depth: 4450.0, color: "#A3A3A3" }
   ] : [
-    { casing_type: 'Conductor (20")', tvd_depth: 65.0, color: "#94A3B8" },
-    { casing_type: 'Surface Casing (13-3/8")', tvd_depth: 650.0, color: "#38BDF8" },
-    { casing_type: 'Intermediate Casing (9-5/8")', tvd_depth: 2250.0, color: "#F59E0B" },
-    { casing_type: 'Production Liner (7")', tvd_depth: 3450.0, color: "#10B981" }
+    { casing_type: 'Conductor (20")', tvd_depth: 65.0, color: "#A2A2A2" },
+    { casing_type: 'Surface Casing (13-3/8")', tvd_depth: 650.0, color: "#B1B1B1" },
+    { casing_type: 'Intermediate Casing (9-5/8")', tvd_depth: 2250.0, color: "#B1B1B1" },
+    { casing_type: 'Production Liner (7")', tvd_depth: 3450.0, color: "#A3A3A3" }
   ];
 
   return {
@@ -530,11 +530,11 @@ export function evaluateOfflineStratigraphicCrossSection(target = 'OIL-BAGHJAN-1
           total_depth_tvd_m: 2900.0,
           is_active: false,
           formations: [
-            { name: "Desert Alluvium", top_tvd: 0.0, base_tvd: 450.0, color: "#64748B", lithology: "Dune Sand & Gravels" },
-            { name: "Pariwar Formation", top_tvd: 450.0, base_tvd: 1150.0, color: "#FCD34D", lithology: "Abrasive Quartz Sandstone" },
-            { name: "Baisakhi Formation", top_tvd: 1150.0, base_tvd: 1750.0, color: "#9CA3AF", lithology: "Tight Laminated Shale" },
-            { name: "Jodhpur Sandstone", top_tvd: 1750.0, base_tvd: 2250.0, color: "#D97706", lithology: "Porous Heavy Oil Sandstone" },
-            { name: "Bilara Carbonates", top_tvd: 2250.0, base_tvd: 2900.0, color: "#EC4899", lithology: "Cavernous Karst Dolomite" }
+            { name: "Desert Alluvium", top_tvd: 0.0, base_tvd: 450.0, color: "#737373", lithology: "Dune Sand & Gravels" },
+            { name: "Pariwar Formation", top_tvd: 450.0, base_tvd: 1150.0, color: "#D7D7D7", lithology: "Abrasive Quartz Sandstone" },
+            { name: "Baisakhi Formation", top_tvd: 1150.0, base_tvd: 1750.0, color: "#A2A2A2", lithology: "Tight Laminated Shale" },
+            { name: "Jodhpur Sandstone", top_tvd: 1750.0, base_tvd: 2250.0, color: "#909090", lithology: "Porous Heavy Oil Sandstone" },
+            { name: "Bilara Carbonates", top_tvd: 2250.0, base_tvd: 2900.0, color: "#888888", lithology: "Cavernous Karst Dolomite" }
           ],
           incidents: [
             { depth_tvd: 1120.0, type: "Seepage Loss (22 bbl)", severity: "MEDIUM", formation: "Pariwar Formation" }
@@ -548,11 +548,11 @@ export function evaluateOfflineStratigraphicCrossSection(target = 'OIL-BAGHJAN-1
           total_depth_tvd_m: 3100.0,
           is_active: true,
           formations: [
-            { name: "Desert Alluvium", top_tvd: 0.0, base_tvd: 500.0, color: "#64748B", lithology: "Surface Sand Beds" },
-            { name: "Pariwar Formation", top_tvd: 500.0, base_tvd: 1200.0, color: "#FCD34D", lithology: "Coarse Abrasive Sand" },
-            { name: "Baisakhi Formation", top_tvd: 1200.0, base_tvd: 1800.0, color: "#9CA3AF", lithology: "Tight Marine Siltstone" },
-            { name: "Jodhpur Sandstone", top_tvd: 1800.0, base_tvd: 2300.0, color: "#D97706", lithology: "Viscous Crude Sand Reservoir" },
-            { name: "Bilara Carbonates", top_tvd: 2300.0, base_tvd: 3100.0, color: "#EC4899", lithology: "Vugular Dolomite & Lost Circulation Zone" }
+            { name: "Desert Alluvium", top_tvd: 0.0, base_tvd: 500.0, color: "#737373", lithology: "Surface Sand Beds" },
+            { name: "Pariwar Formation", top_tvd: 500.0, base_tvd: 1200.0, color: "#D7D7D7", lithology: "Coarse Abrasive Sand" },
+            { name: "Baisakhi Formation", top_tvd: 1200.0, base_tvd: 1800.0, color: "#A2A2A2", lithology: "Tight Marine Siltstone" },
+            { name: "Jodhpur Sandstone", top_tvd: 1800.0, base_tvd: 2300.0, color: "#909090", lithology: "Viscous Crude Sand Reservoir" },
+            { name: "Bilara Carbonates", top_tvd: 2300.0, base_tvd: 3100.0, color: "#888888", lithology: "Vugular Dolomite & Lost Circulation Zone" }
           ],
           incidents: []
         },
@@ -564,11 +564,11 @@ export function evaluateOfflineStratigraphicCrossSection(target = 'OIL-BAGHJAN-1
           total_depth_tvd_m: 3180.0,
           is_active: false,
           formations: [
-            { name: "Desert Alluvium", top_tvd: 0.0, base_tvd: 520.0, color: "#64748B", lithology: "Shallow Gravels" },
-            { name: "Pariwar Formation", top_tvd: 520.0, base_tvd: 1230.0, color: "#FCD34D", lithology: "Porous Sandstone" },
-            { name: "Baisakhi Formation", top_tvd: 1230.0, base_tvd: 1840.0, color: "#9CA3AF", lithology: "Compacted Shale" },
-            { name: "Jodhpur Sandstone", top_tvd: 1840.0, base_tvd: 2350.0, color: "#D97706", lithology: "Bitumen & Heavy Oil Sand" },
-            { name: "Bilara Carbonates", top_tvd: 2350.0, base_tvd: 3180.0, color: "#EC4899", lithology: "Severe Karstified Limestone" }
+            { name: "Desert Alluvium", top_tvd: 0.0, base_tvd: 520.0, color: "#737373", lithology: "Shallow Gravels" },
+            { name: "Pariwar Formation", top_tvd: 520.0, base_tvd: 1230.0, color: "#D7D7D7", lithology: "Porous Sandstone" },
+            { name: "Baisakhi Formation", top_tvd: 1230.0, base_tvd: 1840.0, color: "#A2A2A2", lithology: "Compacted Shale" },
+            { name: "Jodhpur Sandstone", top_tvd: 1840.0, base_tvd: 2350.0, color: "#909090", lithology: "Bitumen & Heavy Oil Sand" },
+            { name: "Bilara Carbonates", top_tvd: 2350.0, base_tvd: 3180.0, color: "#888888", lithology: "Severe Karstified Limestone" }
           ],
           incidents: [
             { depth_tvd: 2740.0, type: "Catastrophic Lost Circulation (110 bbl/hr)", severity: "CRITICAL", formation: "Bilara Carbonates" }
@@ -576,10 +576,10 @@ export function evaluateOfflineStratigraphicCrossSection(target = 'OIL-BAGHJAN-1
         }
       ],
       tie_lines: [
-        { formation: "Pariwar Formation", color: "#FCD34D", tops: [450.0, 500.0, 520.0], structural_dip_trend: "Gentle east-dipping desert shelf (< 1.5 deg)" },
-        { formation: "Baisakhi Formation", color: "#9CA3AF", tops: [1150.0, 1200.0, 1230.0], structural_dip_trend: "Uniform regional seal interval" },
-        { formation: "Jodhpur Sandstone", color: "#D97706", tops: [1750.0, 1800.0, 1840.0], structural_dip_trend: "Main heavy oil pay interval deepening eastward" },
-        { formation: "Bilara Carbonates", color: "#EC4899", tops: [2250.0, 2300.0, 2350.0], structural_dip_trend: "Cavernous carbonate basement with extensive karstification" }
+        { formation: "Pariwar Formation", color: "#D7D7D7", tops: [450.0, 500.0, 520.0], structural_dip_trend: "Gentle east-dipping desert shelf (< 1.5 deg)" },
+        { formation: "Baisakhi Formation", color: "#A2A2A2", tops: [1150.0, 1200.0, 1230.0], structural_dip_trend: "Uniform regional seal interval" },
+        { formation: "Jodhpur Sandstone", color: "#909090", tops: [1750.0, 1800.0, 1840.0], structural_dip_trend: "Main heavy oil pay interval deepening eastward" },
+        { formation: "Bilara Carbonates", color: "#888888", tops: [2250.0, 2300.0, 2350.0], structural_dip_trend: "Cavernous carbonate basement with extensive karstification" }
       ]
     };
   }
@@ -599,10 +599,10 @@ export function evaluateOfflineStratigraphicCrossSection(target = 'OIL-BAGHJAN-1
           total_depth_tvd_m: 4100.0,
           is_active: false,
           formations: [
-            { name: "Seafloor Sediments", top_tvd: 0.0, base_tvd: 700.0, color: "#64748B", lithology: "Pelagic Clay" },
-            { name: "Godavari Clay (SWF)", top_tvd: 700.0, base_tvd: 1600.0, color: "#38BDF8", lithology: "Shallow Water Flow Silt" },
-            { name: "Ravva Sand", top_tvd: 1600.0, base_tvd: 2800.0, color: "#DC2626", lithology: "Deltaic Sandstone" },
-            { name: "Cretaceous Basement", top_tvd: 2800.0, base_tvd: 4100.0, color: "#7C3AED", lithology: "HPHT Fractured Sand" }
+            { name: "Seafloor Sediments", top_tvd: 0.0, base_tvd: 700.0, color: "#737373", lithology: "Pelagic Clay" },
+            { name: "Godavari Clay (SWF)", top_tvd: 700.0, base_tvd: 1600.0, color: "#B1B1B1", lithology: "Shallow Water Flow Silt" },
+            { name: "Ravva Sand", top_tvd: 1600.0, base_tvd: 2800.0, color: "#727272", lithology: "Deltaic Sandstone" },
+            { name: "Cretaceous Basement", top_tvd: 2800.0, base_tvd: 4100.0, color: "#676767", lithology: "HPHT Fractured Sand" }
           ],
           incidents: [
             { depth_tvd: 820.0, type: "Shallow Water Flow Influx", severity: "HIGH", formation: "Godavari Clay (SWF)" }
@@ -616,10 +616,10 @@ export function evaluateOfflineStratigraphicCrossSection(target = 'OIL-BAGHJAN-1
           total_depth_tvd_m: 4500.0,
           is_active: true,
           formations: [
-            { name: "Seafloor Sediments", top_tvd: 0.0, base_tvd: 800.0, color: "#64748B", lithology: "Deep Pelagic Mud" },
-            { name: "Godavari Clay (SWF)", top_tvd: 800.0, base_tvd: 1700.0, color: "#38BDF8", lithology: "Reactive Smectite Gumbo" },
-            { name: "Ravva Sand", top_tvd: 1700.0, base_tvd: 3100.0, color: "#DC2626", lithology: "Overpressured Gas Turbidite" },
-            { name: "Cretaceous Basement", top_tvd: 3100.0, base_tvd: 4500.0, color: "#7C3AED", lithology: "HPHT Deep Basement" }
+            { name: "Seafloor Sediments", top_tvd: 0.0, base_tvd: 800.0, color: "#737373", lithology: "Deep Pelagic Mud" },
+            { name: "Godavari Clay (SWF)", top_tvd: 800.0, base_tvd: 1700.0, color: "#B1B1B1", lithology: "Reactive Smectite Gumbo" },
+            { name: "Ravva Sand", top_tvd: 1700.0, base_tvd: 3100.0, color: "#727272", lithology: "Overpressured Gas Turbidite" },
+            { name: "Cretaceous Basement", top_tvd: 3100.0, base_tvd: 4500.0, color: "#676767", lithology: "HPHT Deep Basement" }
           ],
           incidents: []
         },
@@ -631,10 +631,10 @@ export function evaluateOfflineStratigraphicCrossSection(target = 'OIL-BAGHJAN-1
           total_depth_tvd_m: 4680.0,
           is_active: false,
           formations: [
-            { name: "Seafloor Sediments", top_tvd: 0.0, base_tvd: 850.0, color: "#64748B", lithology: "Hemipelagic Ooze" },
-            { name: "Godavari Clay (SWF)", top_tvd: 850.0, base_tvd: 1750.0, color: "#38BDF8", lithology: "Swelling Gumbo Shale" },
-            { name: "Ravva Sand", top_tvd: 1750.0, base_tvd: 3200.0, color: "#DC2626", lithology: "High-Rate Turbidite Gas Sand" },
-            { name: "Cretaceous Basement", top_tvd: 3200.0, base_tvd: 4680.0, color: "#7C3AED", lithology: "Ultra-HPHT Complex" }
+            { name: "Seafloor Sediments", top_tvd: 0.0, base_tvd: 850.0, color: "#737373", lithology: "Hemipelagic Ooze" },
+            { name: "Godavari Clay (SWF)", top_tvd: 850.0, base_tvd: 1750.0, color: "#B1B1B1", lithology: "Swelling Gumbo Shale" },
+            { name: "Ravva Sand", top_tvd: 1750.0, base_tvd: 3200.0, color: "#727272", lithology: "High-Rate Turbidite Gas Sand" },
+            { name: "Cretaceous Basement", top_tvd: 3200.0, base_tvd: 4680.0, color: "#676767", lithology: "Ultra-HPHT Complex" }
           ],
           incidents: [
             { depth_tvd: 2650.0, type: "Gas Kick (14 bbl)", severity: "HIGH", formation: "Ravva Sand" }
@@ -642,8 +642,8 @@ export function evaluateOfflineStratigraphicCrossSection(target = 'OIL-BAGHJAN-1
         }
       ],
       tie_lines: [
-        { formation: "Godavari Clay (SWF)", color: "#38BDF8", tops: [700.0, 800.0, 850.0], structural_dip_trend: "Seaward dipping shallow water flow horizon" },
-        { formation: "Ravva Sand", color: "#DC2626", tops: [1600.0, 1700.0, 1750.0], structural_dip_trend: "Major turbidite channel fairway deepening down-dip" }
+        { formation: "Godavari Clay (SWF)", color: "#B1B1B1", tops: [700.0, 800.0, 850.0], structural_dip_trend: "Seaward dipping shallow water flow horizon" },
+        { formation: "Ravva Sand", color: "#727272", tops: [1600.0, 1700.0, 1750.0], structural_dip_trend: "Major turbidite channel fairway deepening down-dip" }
       ]
     };
   }
@@ -663,10 +663,10 @@ export function evaluateOfflineStratigraphicCrossSection(target = 'OIL-BAGHJAN-1
         total_depth_tvd_m: 3480.0,
         is_active: false,
         formations: [
-          { name: "Alluvium / Dihing", top_tvd: 0.0, base_tvd: 380.0, color: "#64748B", lithology: "Gravels & Coarse Sand" },
-          { name: "Tipam Sandstone", top_tvd: 380.0, base_tvd: 2040.0, color: "#EAB308", lithology: "Massive Porous Aquifer Sandstone" },
-          { name: "Barail Formation", top_tvd: 2040.0, base_tvd: 2820.0, color: "#F97316", lithology: "Interbedded Sand, Coal & Shale" },
-          { name: "Kopili Formation", top_tvd: 2820.0, base_tvd: 3480.0, color: "#A855F7", lithology: "Splintery Marine Shale" }
+          { name: "Alluvium / Dihing", top_tvd: 0.0, base_tvd: 380.0, color: "#737373", lithology: "Gravels & Coarse Sand" },
+          { name: "Tipam Sandstone", top_tvd: 380.0, base_tvd: 2040.0, color: "#BBBBBB", lithology: "Massive Porous Aquifer Sandstone" },
+          { name: "Barail Formation", top_tvd: 2040.0, base_tvd: 2820.0, color: "#9A9A9A", lithology: "Interbedded Sand, Coal & Shale" },
+          { name: "Kopili Formation", top_tvd: 2820.0, base_tvd: 3480.0, color: "#808080", lithology: "Splintery Marine Shale" }
         ],
         incidents: [
           { depth_tvd: 1540.0, type: "Lost Circulation (32 bbl)", severity: "HIGH", formation: "Tipam Sandstone" }
@@ -680,10 +680,10 @@ export function evaluateOfflineStratigraphicCrossSection(target = 'OIL-BAGHJAN-1
         total_depth_tvd_m: 3500.0,
         is_active: true,
         formations: [
-          { name: "Alluvium / Dihing", top_tvd: 0.0, base_tvd: 420.0, color: "#64748B", lithology: "Fluvial Alluvium & Gravels" },
-          { name: "Tipam Sandstone", top_tvd: 420.0, base_tvd: 2240.0, color: "#EAB308", lithology: "Permeable Sandstone Reservoir" },
-          { name: "Barail Formation", top_tvd: 2240.0, base_tvd: 2950.0, color: "#F97316", lithology: "Overpressured Hydrocarbon Gas Sand" },
-          { name: "Kopili Formation", top_tvd: 2950.0, base_tvd: 3500.0, color: "#A855F7", lithology: "High-Stress Calcareous Marine Shale" }
+          { name: "Alluvium / Dihing", top_tvd: 0.0, base_tvd: 420.0, color: "#737373", lithology: "Fluvial Alluvium & Gravels" },
+          { name: "Tipam Sandstone", top_tvd: 420.0, base_tvd: 2240.0, color: "#BBBBBB", lithology: "Permeable Sandstone Reservoir" },
+          { name: "Barail Formation", top_tvd: 2240.0, base_tvd: 2950.0, color: "#9A9A9A", lithology: "Overpressured Hydrocarbon Gas Sand" },
+          { name: "Kopili Formation", top_tvd: 2950.0, base_tvd: 3500.0, color: "#808080", lithology: "High-Stress Calcareous Marine Shale" }
         ],
         incidents: []
       },
@@ -695,10 +695,10 @@ export function evaluateOfflineStratigraphicCrossSection(target = 'OIL-BAGHJAN-1
         total_depth_tvd_m: 3550.0,
         is_active: false,
         formations: [
-          { name: "Alluvium / Dihing", top_tvd: 0.0, base_tvd: 430.0, color: "#64748B", lithology: "Recent Silt & Sand" },
-          { name: "Tipam Sandstone", top_tvd: 430.0, base_tvd: 2260.0, color: "#EAB308", lithology: "Continuous Aquifer Sand Body" },
-          { name: "Barail Formation", top_tvd: 2260.0, base_tvd: 2965.0, color: "#F97316", lithology: "High Pressure Gas Kick Zone" },
-          { name: "Kopili Formation", top_tvd: 2965.0, base_tvd: 3550.0, color: "#A855F7", lithology: "Overpressured Marine Mudstone" }
+          { name: "Alluvium / Dihing", top_tvd: 0.0, base_tvd: 430.0, color: "#737373", lithology: "Recent Silt & Sand" },
+          { name: "Tipam Sandstone", top_tvd: 430.0, base_tvd: 2260.0, color: "#BBBBBB", lithology: "Continuous Aquifer Sand Body" },
+          { name: "Barail Formation", top_tvd: 2260.0, base_tvd: 2965.0, color: "#9A9A9A", lithology: "High Pressure Gas Kick Zone" },
+          { name: "Kopili Formation", top_tvd: 2965.0, base_tvd: 3550.0, color: "#808080", lithology: "Overpressured Marine Mudstone" }
         ],
         incidents: [
           { depth_tvd: 2460.0, type: "Gas Kick (28 bbl)", severity: "CRITICAL", formation: "Barail Formation" }
@@ -706,9 +706,9 @@ export function evaluateOfflineStratigraphicCrossSection(target = 'OIL-BAGHJAN-1
       }
     ],
     tie_lines: [
-      { formation: "Tipam Sandstone", color: "#EAB308", tops: [380.0, 420.0, 430.0], structural_dip_trend: "Gentle northeast dip across active shelf (< 2 deg)" },
-      { formation: "Barail Formation", color: "#F97316", tops: [2040.0, 2240.0, 2260.0], structural_dip_trend: "Primary gas reservoir horizon deepening towards Baghjan" },
-      { formation: "Kopili Formation", color: "#A855F7", tops: [2820.0, 2950.0, 2965.0], structural_dip_trend: "Regional regional marine shale detachment surface" }
+      { formation: "Tipam Sandstone", color: "#BBBBBB", tops: [380.0, 420.0, 430.0], structural_dip_trend: "Gentle northeast dip across active shelf (< 2 deg)" },
+      { formation: "Barail Formation", color: "#9A9A9A", tops: [2040.0, 2240.0, 2260.0], structural_dip_trend: "Primary gas reservoir horizon deepening towards Baghjan" },
+      { formation: "Kopili Formation", color: "#808080", tops: [2820.0, 2950.0, 2965.0], structural_dip_trend: "Regional regional marine shale detachment surface" }
     ]
   };
 }
@@ -750,9 +750,9 @@ export function generateOfflineDossier(wellId = 'OIL-BAGHJAN-1', radiusKm = 25.0
     report_metadata: {
       title: "PRE-SPUD OFFSET WELL HAZARD & ENGINEERING DOSSIER",
       basin: regName,
-      institution: "PETROLQ RIG EDGE",
+      institution: "AGATE RIG EDGE",
       generated_at: new Date().toISOString().replace('T', ' ').substring(0, 19) + " UTC",
-      document_id: `PETROLQ-DOSSIER-${wellId}-OFFLINE`,
+      document_id: `AGATE-DOSSIER-${wellId}-OFFLINE`,
       confidentiality: "RESTRICTED / OPERATIONAL"
     },
     target_well: {
@@ -780,7 +780,7 @@ export function generateOfflineDossier(wellId = 'OIL-BAGHJAN-1', radiusKm = 25.0
         min_distance_m: 842.0,
         separation_factor: 4.8,
         status: "PASS",
-        color: "#10B981",
+        color: "#A3A3A3",
         active_depth_md: 1250.0,
         offset_depth_md: 1265.0
       },
@@ -789,7 +789,7 @@ export function generateOfflineDossier(wellId = 'OIL-BAGHJAN-1', radiusKm = 25.0
         min_distance_m: 1420.0,
         separation_factor: 7.2,
         status: "PASS",
-        color: "#10B981",
+        color: "#A3A3A3",
         active_depth_md: 2100.0,
         offset_depth_md: 2115.0
       }

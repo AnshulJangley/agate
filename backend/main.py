@@ -14,6 +14,7 @@ from sqlalchemy import cast
 from geoalchemy2.functions import ST_DWithin, ST_MakePoint, ST_SetSRID
 from geoalchemy2.types import Geography
 import re
+import math
 from typing import List, Optional, Dict, Any
 import numpy as np
 from pydantic import BaseModel
@@ -32,6 +33,9 @@ from api.ppfg import router as ppfg_router
 from api.dossier import router as dossier_router
 from api.backtest import router as backtest_router
 from api.ai_assistant import router as ai_assistant_router
+from api.chat import router as chat_router
+from api.well_logs import router as well_logs_router
+from services.telemetry import get_telemetry_source
 from services.hybrid_retrieval import (
     DEFAULT_WEIGHTS,
     compute_bm25_score,
@@ -70,11 +74,18 @@ class RAGSearchResponse(BaseModel):
     data_source: Optional[str] = "synthetic"
 
 def compute_cosine_similarity(vec1, vec2):
-    v1 = np.array(vec1)
-    v2 = np.array(vec2)
-    if np.linalg.norm(v1) == 0 or np.linalg.norm(v2) == 0:
+    v1 = np.array(vec1, dtype=float)
+    v2 = np.array(vec2, dtype=float)
+    # Vectors written under a different embedding model/dimension cannot be
+    # compared. Returning 0.0 lets the caller fall through to the lexical
+    # signals instead of raising a ValueError mid-request.
+    if v1.shape != v2.shape:
         return 0.0
-    return float(np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2)))
+    n1 = np.linalg.norm(v1)
+    n2 = np.linalg.norm(v2)
+    if n1 == 0 or n2 == 0:
+        return 0.0
+    return float(np.dot(v1, v2) / (n1 * n2))
 
 import threading
 
@@ -97,7 +108,7 @@ async def lifespan(app: FastAPI):
     yield
     # Clean up on shutdown if necessary
 
-app = FastAPI(title="PetrolQ API", description="Oil & Gas Drilling Data API", lifespan=lifespan)
+app = FastAPI(title="AGATE API", description="Oil & Gas Drilling Data API", lifespan=lifespan)
 
 # Configure CORS - allow all Vercel previews and localhost
 app.add_middleware(
@@ -121,15 +132,17 @@ app.include_router(ppfg_router)
 app.include_router(dossier_router)
 app.include_router(backtest_router)
 app.include_router(ai_assistant_router)
+app.include_router(chat_router)
+app.include_router(well_logs_router)
 
 @app.get("/")
 def root():
-    return {"status": "ok", "service": "PetrolQ API"}
+    return {"status": "ok", "service": "AGATE API"}
 
 @app.get("/health")
 @app.get("/api/health")
 def health():
-    return {"status": "healthy", "service": "PetrolQ API"}
+    return {"status": "healthy", "service": "AGATE API"}
 
 import json
 from pathlib import Path
@@ -429,9 +442,8 @@ INDIAN_WELLS_METADATA: Dict[str, Dict[str, Any]] = {
 def get_north_sea_wells() -> List[WellResponse]:
     global _NORTH_SEA_WELLS_CACHE
     if _NORTH_SEA_WELLS_CACHE is None:
+        # Single source of truth. The backend must not read from the frontend source tree at runtime.
         north_sea_file = Path(__file__).resolve().parent / "data" / "north_sea_wells.json"
-        if not north_sea_file.exists():
-            north_sea_file = Path(__file__).resolve().parent.parent / "frontend" / "src" / "data" / "north_sea_wells.json"
         if north_sea_file.exists():
             try:
                 with open(north_sea_file, encoding="utf-8") as f:
@@ -467,6 +479,7 @@ def get_north_sea_wells() -> List[WellResponse]:
                 print(f"Error loading north sea wells: {e}")
                 _NORTH_SEA_WELLS_CACHE = []
         else:
+            print(f"Warning: {north_sea_file} is missing; North Sea reference wells unavailable (count 0).")
             _NORTH_SEA_WELLS_CACHE = []
     return _NORTH_SEA_WELLS_CACHE
 
@@ -509,7 +522,7 @@ def _format_well_response(w: Any) -> WellResponse:
         total_depth_tvd=td,
         total_depth_m=td,
         spud_date=str(spud_date_val) if spud_date_val is not None else "2024-01-10",
-        data_source=str(data_source_val) if data_source_val is not None else "volve_relabeled",
+        data_source=str(data_source_val) if data_source_val is not None else "synthetic_calibrated",
         source=source,
         operator=operator,
         is_synthetic=is_synth,
@@ -519,6 +532,35 @@ def _format_well_response(w: Any) -> WellResponse:
         bha_type=bha,
         surface_location=loc
     )
+
+def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """Great-circle distance in kilometres."""
+    d_lat = math.radians(lat2 - lat1)
+    d_lon = math.radians(lon2 - lon1)
+    a = (
+        math.sin(d_lat / 2) ** 2
+        + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(d_lon / 2) ** 2
+    )
+    return 6371.0 * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+
+def _within_radius(well: Any, lat: float, lon: float, radius_km: float) -> bool:
+    """
+    True when a formatted well's surface location falls inside the radius.
+
+    A well with no coordinates is excluded rather than assumed to be at (0, 0) —
+    defaulting the missing value to zero would place it in the Gulf of Guinea.
+    """
+    loc = getattr(well, "surface_location", None)
+    if not isinstance(loc, dict):
+        return False
+    try:
+        w_lat = float(loc.get("lat"))
+        w_lon = float(loc.get("lon"))
+    except (TypeError, ValueError):
+        return False
+    return _haversine_km(lat, lon, w_lat, w_lon) <= radius_km
+
 
 @app.get("/api/wells/nearby", response_model=List[WellResponse])
 def get_nearby_wells(
@@ -533,14 +575,27 @@ def get_nearby_wells(
     Guarantees that all wells in the selected basin (Assam, Rajasthan, KG, Mizoram, North Sea) or across India are returned.
     """
     global _ALL_WELLS_CACHE
-    
-    # Fast path: Serve cached all-wells response instantly if already loaded
-    is_broad_query = (lat is None or lon is None or radius_km is None or radius_km >= 100)
+
+    # A spatial query needs all three: a centre and a radius. Without them there
+    # is nothing to measure from, so the caller gets the whole catalogue.
+    has_point = lat is not None and lon is not None and radius_km is not None
+    # When a caller supplies a centre and a radius, it is honoured at any distance.
+    # There used to be an upper cutoff: >= 100 km silently widened to the whole
+    # catalogue, so radius_km=300 around a North Sea block returned all 187 wells
+    # including the Assam ones, ~8,000 km away. The old `is_broad_query` conflated
+    # "no coordinates given" with "radius is large", which are different requests.
+    spatial = has_point
+    is_broad_query = not has_point
+
+    # Fast path: serve the cached all-wells response instantly if already loaded
     if region == "all" and is_broad_query and _ALL_WELLS_CACHE is not None:
         return _ALL_WELLS_CACHE
 
     if region == "north_sea":
-        return get_north_sea_wells()
+        north_sea = get_north_sea_wells()
+        if spatial:
+            north_sea = [w for w in north_sea if _within_radius(w, lat, lon, radius_km)]
+        return north_sea
 
     try:
         query = db.query(WellMaster)
@@ -559,8 +614,10 @@ def get_nearby_wells(
                     ~WellMaster.well_id.like("OIL-MZ-%")
                 )
         
-        # If a strict local radius is requested with coordinates (and not an all-region or large basin query)
-        if lat is not None and lon is not None and radius_km is not None and radius_km < 100 and region == "all":
+        # Applies to region-scoped queries too. It previously also required
+        # region == "all", so `?region=assam&lat=..&lon=..&radius_km=50`
+        # silently ignored the radius and returned every Assam well.
+        if spatial:
             radius_meters = radius_km * 1000.0
             target_point = ST_SetSRID(ST_MakePoint(lon, lat), 4326)
             query = query.filter(
@@ -571,10 +628,18 @@ def get_nearby_wells(
                 )
             )
 
-        wells = query.all()
-        results = [_format_well_response(w) for w in wells]
+        results = [_format_well_response(w) for w in query.all()]
+
         if region == "all":
-            results.extend(get_north_sea_wells())
+            north_sea = get_north_sea_wells()
+            # These come from backend/data/north_sea_wells.json, not the database,
+            # and were appended unconditionally — so the ST_DWithin filter above
+            # narrowed the database rows and then all 159 of these were added back.
+            # A 50 km radius around Baghjan in Assam returned 170 wells, 159 of
+            # them North Sea.
+            if spatial:
+                north_sea = [w for w in north_sea if _within_radius(w, lat, lon, radius_km)]
+            results.extend(north_sea)
             if is_broad_query:
                 _ALL_WELLS_CACHE = results
         return results
@@ -601,55 +666,76 @@ def get_nearby_wells(
                 elif region == "north_sea":
                     all_loaded = [w for w in all_loaded if "North Sea" in str(w.field_name) or "Volve" in str(w.field_name) or "/" in w.well_id]
 
-                # Filter by spatial radius if specific coordinates provided
-                if lat is not None and lon is not None and radius_km is not None and radius_km < 200:
-                    import math
-                    def _haversine(lat1, lon1, lat2, lon2):
-                        R = 6371.0
-                        dLat = math.radians(lat2 - lat1)
-                        dLon = math.radians(lon2 - lon1)
-                        a = math.sin(dLat/2)**2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dLon/2)**2
-                        return R * 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
-
-                    all_loaded = [
-                        w for w in all_loaded
-                        if w.surface_location and _haversine(lat, lon, w.surface_location.get("lat", 0), w.surface_location.get("lon", 0)) <= radius_km
-                    ]
+                # Same spatial rule as the primary path, via the shared helper —
+                # this previously carried its own inline haversine and a
+                # different cutoff (200 km against the primary path's 100 km),
+                # so the two paths disagreed about what "nearby" meant.
+                if spatial:
+                    all_loaded = [w for w in all_loaded if _within_radius(w, lat, lon, radius_km)]
 
                 return all_loaded
             except Exception as read_err:
                 print(f"Error parsing fallback wells: {read_err}")
         return get_north_sea_wells()
 
+def _is_north_sea_well_id(well_id: str) -> bool:
+    """North Sea designations carry a block prefix ('15/9-F-11') or the SYNTH- benchmark prefix.
+    Indian assets all use the OIL- prefix. Mirrors the field_name/well_id test used in
+    get_nearby_wells' offline filter."""
+    return "/" in well_id or well_id.startswith("SYNTH-")
+
 @app.get("/api/wells/regions")
 def get_regions(db: Session = Depends(get_db)):
-    """Returns available regions, their center coordinates, well counts, and geological descriptions."""
+    """Returns available regions, their center coordinates, well counts, and geological descriptions.
+
+    Count fields are deliberately split so a file-backed basin can never masquerade as a populated
+    database:
+      * well_count       - rows actually present in well_master for that region.
+      * file_well_count  - wells served from backend/data/north_sea_wells.json (0 for every other region).
+      * total_well_count - what /api/wells/nearby will actually return for that region.
+      * data_source      - "database" if well_count came from well_master, "offline_fallback" if the
+                           database was unreachable and calibrated constants were substituted.
+    """
+    counts_source = "database"
     try:
         all_wells = db.query(WellMaster.well_id).all()
         well_ids = [w[0] for w in all_wells]
         counts = {
-            "assam": sum(1 for wid in well_ids if not (wid.startswith("OIL-RAJ") or wid.startswith("OIL-KG") or wid.startswith("OIL-MZ"))),
+            "assam": sum(1 for wid in well_ids if not (wid.startswith("OIL-RAJ") or wid.startswith("OIL-KG") or wid.startswith("OIL-MZ") or _is_north_sea_well_id(wid))),
             "rajasthan": sum(1 for wid in well_ids if wid.startswith("OIL-RAJ")),
             "kg": sum(1 for wid in well_ids if wid.startswith("OIL-KG")),
             "mizoram": sum(1 for wid in well_ids if wid.startswith("OIL-MZ")),
-            "north_sea": len(get_north_sea_wells())
+            "north_sea": sum(1 for wid in well_ids if _is_north_sea_well_id(wid))
         }
     except Exception as e:
         print(f"Warning: db query failed in get_regions ({e}), using calibrated fallback counts.")
+        counts_source = "offline_fallback"
         counts = {
             "assam": 14,
             "rajasthan": 4,
             "kg": 4,
             "mizoram": 4,
-            "north_sea": len(get_north_sea_wells()) or 159
+            "north_sea": 0
         }
-    
+
+    # Wells served from disk rather than from well_master. Never folded into well_count.
+    file_counts = {
+        "assam": 0,
+        "rajasthan": 0,
+        "kg": 0,
+        "mizoram": 0,
+        "north_sea": len(get_north_sea_wells())
+    }
+
     return [
         {
             "id": "assam",
             "name": "Upper Assam Shelf",
             "center": [27.4, 95.2],
             "well_count": counts["assam"],
+            "file_well_count": file_counts["assam"],
+            "total_well_count": counts["assam"] + file_counts["assam"],
+            "data_source": counts_source,
             "description": "Mature oilfield with severe thief-bed losses and high-pressure gas kicks."
         },
         {
@@ -657,6 +743,9 @@ def get_regions(db: Session = Depends(get_db)):
             "name": "Rajasthan Basin",
             "center": [27.5, 71.5],
             "well_count": counts["rajasthan"],
+            "file_well_count": file_counts["rajasthan"],
+            "total_well_count": counts["rajasthan"] + file_counts["rajasthan"],
+            "data_source": counts_source,
             "description": "Desert basin with heavy oil, sand abrasion, and massive lost circulation."
         },
         {
@@ -664,6 +753,9 @@ def get_regions(db: Session = Depends(get_db)):
             "name": "KG Deepwater",
             "center": [16.25, 82.40],
             "well_count": counts["kg"],
+            "file_well_count": file_counts["kg"],
+            "total_well_count": counts["kg"] + file_counts["kg"],
+            "data_source": counts_source,
             "description": "Offshore basin with Shallow Water Flow, gumbo shale, and HPHT overpressures."
         },
         {
@@ -671,14 +763,20 @@ def get_regions(db: Session = Depends(get_db)):
             "name": "Mizoram Fold Belt",
             "center": [23.72, 92.70],
             "well_count": counts["mizoram"],
+            "file_well_count": file_counts["mizoram"],
+            "total_well_count": counts["mizoram"] + file_counts["mizoram"],
+            "data_source": counts_source,
             "description": "Tectonically active fold belt with high horizontal stress and stuck pipe risks."
         },
         {
             "id": "north_sea",
             "name": "North Sea (FORCE2020 & Volve)",
             "center": [58.262, 8.043],
-            "well_count": counts["north_sea"] or 159,
-            "description": "North Sea benchmark basin with 159 real FORCE 2020 & Equinor Volve exploration wells."
+            "well_count": counts["north_sea"],
+            "file_well_count": file_counts["north_sea"],
+            "total_well_count": counts["north_sea"] + file_counts["north_sea"],
+            "data_source": counts_source,
+            "description": "North Sea benchmark basin (FORCE 2020 & Equinor Volve). Reference wells are served from backend/data/north_sea_wells.json, not from well_master; see file_well_count."
         }
     ]
 
@@ -997,22 +1095,40 @@ def search_events(
         bm25_score = compute_bm25_score(query, doc_text)
         vec_score = float(sim)
 
-        # 3. Simple additive score (Semantic + BM25 boost)
-        final_score = vec_score + (0.1 * bm25_score)
-        
-        # Keyword search fallback for raw text
+        # 3. AHP-weighted fusion of all five retrieval signals (Saaty 1980).
+        #    A signal with no context available returns -1.0; the fusion drops
+        #    those and renormalises the remaining weights over what is actually
+        #    observable, so a query without a depth is not silently penalised.
+        formation_score = compute_formation_match_score(formation, ev_formation, query=query)
+        depth_score = compute_depth_proximity_score(target_depth, depth_val)
+        type_score = compute_event_type_match_score(query, ev_type, query_event_type=event_type)
+
+        fusion = compute_hybrid_relevance_score(
+            formation_match=formation_score,
+            depth_proximity=depth_score,
+            event_type_match=type_score,
+            bm25=bm25_score,
+            vector=vec_score,
+        )
+        final_score = fusion["hybrid_score"]
+
+        # Raw-text chunks expose no formation/depth, so the weighted signals
+        # above are thin for them. Fall back to lexical containment so an
+        # uploaded report is still findable by its own wording.
         if ev_type == "raw_text":
             if any(q.lower() in root_cause.lower() for q in query.split() if len(q) > 3):
-                final_score += 0.3
+                final_score = min(1.0, final_score + 0.3)
             else:
-                final_score -= 0.5 # Penalize if keywords not found in raw text
+                final_score *= 0.5
 
-        # Boost score massively for newly extracted events so they always surface
-        sort_score = final_score
+        # Freshly extracted report events should outrank the seeded baseline
+        # without swamping it. A bounded bonus on the same 0..1 scale does that;
+        # the previous flat +10.0 made every other signal irrelevant.
         data_source_val = getattr(event, "data_source", "") or ""
         if data_source_val == "dd_report":
-            sort_score += 10.0
-            
+            final_score = min(1.0, final_score + 0.15)
+
+        sort_score = final_score
         display_score = min(final_score, 0.99)
 
         # 4. Deterministic Guardrails validation
@@ -1035,7 +1151,7 @@ def search_events(
         # Prompt 2: Data Provenance on each search result
         ev_source = getattr(event, "data_source", None) or (
             "force2020_relabeled" if "NAHAR" in str(event.well_id)
-            else "volve_relabeled" if ("BAGHJAN" in str(event.well_id) or "MORAN" in str(event.well_id))
+            else "synthetic_calibrated" if ("BAGHJAN" in str(event.well_id) or "MORAN" in str(event.well_id))
             else "synthetic"
         )
 
@@ -1046,9 +1162,11 @@ def search_events(
                 similarity_score=round(display_score, 4),
                 hybrid_score=round(display_score, 4),
                 score_breakdown=ScoreBreakdown(
-                    formation_match=1.0 if formation else 0.0,
-                    depth_proximity=1.0 if target_depth else 0.0,
-                    event_type_match=1.0 if event_type else 0.0,
+                    # -1.0 is the "no context" sentinel used by the fusion; the
+                    # UI shows an absent signal as 0 rather than a negative bar.
+                    formation_match=round(max(0.0, formation_score), 4),
+                    depth_proximity=round(max(0.0, depth_score), 4),
+                    event_type_match=round(max(0.0, type_score), 4),
                     bm25=round(bm25_score, 4),
                     vector=round(vec_score, 4)
                 ),
@@ -1139,7 +1257,7 @@ async def trigger_scenario(req: ScenarioRequest):
     Modifies underlying simulated telemetry values realistically for that scenario type.
     Computes resulting risk scores from those simulated values and broadcasts to all WebSocket clients.
     """
-    res = telemetry_simulator.set_scenario(req.scenario)
+    res = get_telemetry_source().set_scenario(req.scenario)
     return {
         "status": "success",
         "scenario": res["scenario"],
@@ -1171,6 +1289,43 @@ async def control_simulator(req: ControlRequest):
     elif req.action == "seek" and req.depth is not None:
         await telemetry_simulator.seek(req.depth)
     return telemetry_simulator.get_status()
+
+@app.get("/api/telemetry/source")
+def get_telemetry_source_info():
+    """
+    Which telemetry source is live, and what it can actually do.
+
+    Exists so nothing upstream has to guess whether the numbers on screen came off a
+    rig. `/api/simulator/*` is the simulator's own control surface; this endpoint says
+    what is driving it.
+    """
+    try:
+        source = get_telemetry_source()
+    except NotImplementedError as exc:
+        return {
+            "source": "ertmac",
+            "available": False,
+            "is_simulated": False,
+            "capabilities": {},
+            "detail": str(exc),
+        }
+
+    is_live = source.name != "simulator"
+    return {
+        "source": source.name,
+        "available": True,
+        "is_simulated": not is_live,
+        "capabilities": dict(getattr(source, "capabilities", {})),
+        "note": (
+            "Live feed connected."
+            if is_live else
+            "No eRTMAC feed is connected. Sensor values are generated by the in-process "
+            "simulator, calibrated to regional lithology — no reading here came off a rig. "
+            "Connecting one requires an adapter; see backend/services/telemetry.py for the "
+            "interface details that are still owed."
+        ),
+    }
+
 
 @app.get("/api/simulator/status")
 def get_simulator_status():
@@ -1255,6 +1410,91 @@ def query_knowledge_graph(
     kg = KnowledgeGraphService()
     kg.ensure_graph_built(db)
     return kg.query_hazard_subgraph(well_id=well_id, hazard_type=hazard_type)
+
+
+# ==============================================================================
+# Phase 2: persisted knowledge graph
+#
+# The NetworkX graph above is rebuilt in memory on every call and discarded on
+# restart. These endpoints read the durable copy in knowledge_node /
+# knowledge_edge instead, so the graph survives a backend restart and the
+# frontend has a stable payload to draw.
+#
+# Every response carries data_source, so a caller can tell a real Postgres read
+# from this codebase's silent JSON fallbacks - the failure mode that hid the
+# zero-embedding bug for so long.
+#
+# Populate/refresh with:  POST /api/graph/rebuild
+# ==============================================================================
+
+@app.get("/api/graph/stats")
+def knowledge_graph_stats(db: Session = Depends(get_db)):
+    """Row counts straight from Postgres - the honest persistence check."""
+    try:
+        from services import graph_store
+        return graph_store.graph_stats(db)
+    except Exception as e:
+        return {"node_count": 0, "edge_count": 0, "nodes_by_label": {},
+                "edges_by_relationship": {}, "data_source": "unavailable", "error": str(e)}
+
+
+@app.get("/api/graph/overview")
+def knowledge_graph_overview(limit: Optional[int] = None, db: Session = Depends(get_db)):
+    """Whole persisted graph, shaped for the UI."""
+    try:
+        from services import graph_store
+        return graph_store.overview(db, limit=limit)
+    except Exception as e:
+        return {"nodes": [], "edges": [], "node_count": 0, "edge_count": 0,
+                "data_source": "unavailable", "error": str(e)}
+
+
+@app.get("/api/graph/node/{node_ref:path}")
+def knowledge_graph_node(node_ref: str, db: Session = Depends(get_db)):
+    """One node by node_key ('Well:OIL-MORAN-1', 'Event:101') or by uuid."""
+    try:
+        from services import graph_store
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=str(e))
+    node = graph_store.get_node(db, node_ref)
+    if node is None:
+        raise HTTPException(status_code=404, detail=f"No graph node matching {node_ref!r}")
+    return node
+
+
+@app.get("/api/graph/neighbors/{node_ref:path}")
+def knowledge_graph_neighbors(
+    node_ref: str,
+    depth: int = Query(1, ge=0, le=5, description="Hop count (0-5)"),
+    db: Session = Depends(get_db),
+):
+    """Breadth-first neighbourhood around a node - backs the graph inspector."""
+    try:
+        from services import graph_store
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=str(e))
+    return graph_store.neighbors(db, node_ref, depth=depth)
+
+
+@app.post("/api/graph/rebuild")
+def knowledge_graph_rebuild(
+    prune: bool = Query(True, description="Delete rows no longer present in the rebuilt graph"),
+    db: Session = Depends(get_db),
+):
+    """
+    Rebuild the graph deterministically from well_master + synthetic_event and
+    persist it. Idempotent: node/edge ids are uuid5 over stable keys, so a repeat
+    rebuild updates in place rather than duplicating.
+    """
+    try:
+        from services import graph_store
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=str(e))
+    try:
+        return graph_store.rebuild_and_persist(db, prune=prune)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Graph rebuild failed: {e}")
 
 @app.websocket("/api/ws/telemetry")
 async def websocket_telemetry(websocket: WebSocket):

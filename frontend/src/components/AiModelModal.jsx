@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Sparkles, Bot, Terminal, Cpu, CheckCircle2, AlertCircle, RefreshCw, Key, ShieldCheck } from 'lucide-react';
+import { X, Sparkles, Bot, Terminal, Cpu, CheckCircle2, AlertCircle, RefreshCw, Key, ShieldCheck, ShieldAlert } from 'lucide-react';
 import axios from 'axios';
 import { API_BASE } from '../lib/api';
 
@@ -58,6 +58,42 @@ export default function AiModelModal({ isOpen, onClose, aiStatus, onRefreshStatu
       default:
         return 'border-slate-700 bg-slate-900 text-slate-300';
     }
+  };
+
+  // Derives the badge from the REAL guardrail outcome returned by /api/ai/synthesize
+  // (`guardrail_verified` / `guardrail_violations`). A pass is never assumed: on the
+  // error path the response never reached the 4-gate validator at all.
+  const getGuardrailState = (result) => {
+    if (!result || result.status === 'error') {
+      return {
+        label: 'Not Validated — Request Failed',
+        icon: <AlertCircle size={11} />,
+        textClass: 'text-rose-400',
+        boxClass: 'border-rose-500/40 bg-rose-950/20'
+      };
+    }
+    if (result.guardrail_verified === true) {
+      return {
+        label: 'Guardrail Verified',
+        icon: <CheckCircle2 size={11} />,
+        textClass: 'text-emerald-400',
+        boxClass: 'border-slate-800 bg-slate-900'
+      };
+    }
+    if (result.guardrail_verified === false) {
+      return {
+        label: 'Guardrail Blocked — Fallback Answer',
+        icon: <ShieldAlert size={11} />,
+        textClass: 'text-rose-400',
+        boxClass: 'border-rose-500/40 bg-rose-950/20'
+      };
+    }
+    return {
+      label: 'Guardrail Status Unknown',
+      icon: <AlertCircle size={11} />,
+      textClass: 'text-amber-400',
+      boxClass: 'border-amber-500/40 bg-amber-950/20'
+    };
   };
 
   return (
@@ -196,13 +232,30 @@ OLLAMA_ENDPOINT=http://localhost:11434/v1 # For Ollama`}
               </button>
             </div>
 
-            {testResult && (
-              <div className="mt-2 p-2.5 bg-slate-900 rounded-lg border border-slate-800 text-[11px] space-y-1.5">
-                <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono">
-                  <span className="capitalize text-cyan-300">Provider: {testResult.provider} ({testResult.model})</span>
-                  <span className="text-emerald-400">✓ Guardrail Verified</span>
+            {testResult && (() => {
+              const guardrail = getGuardrailState(testResult);
+              const isError = testResult.status === 'error';
+              const violations = testResult.guardrail_violations || [];
+              return (
+              <div className={`mt-2 p-2.5 rounded-lg border text-[11px] space-y-1.5 ${guardrail.boxClass}`}>
+                <div className="flex items-center justify-between gap-2 text-[10px] text-slate-400 font-mono">
+                  {isError ? (
+                    <span className="text-rose-300">Synthesis request failed</span>
+                  ) : (
+                    <span className="capitalize text-cyan-300">Provider: {testResult.provider} ({testResult.model})</span>
+                  )}
+                  <span className={`flex items-center gap-1 shrink-0 ${guardrail.textClass}`}>
+                    {guardrail.icon} {guardrail.label}
+                  </span>
                 </div>
-                <p className="text-slate-300">{testResult.summary}</p>
+                <p className={isError ? 'text-rose-200' : 'text-slate-300'}>{testResult.summary}</p>
+                {violations.length > 0 && (
+                  <ul className="list-disc list-inside text-rose-300/90 space-y-0.5">
+                    {violations.map((v, i) => (
+                      <li key={i}>{v}</li>
+                    ))}
+                  </ul>
+                )}
                 {testResult.recommendations && testResult.recommendations.length > 0 && (
                   <ul className="list-disc list-inside text-slate-400 space-y-0.5">
                     {testResult.recommendations.slice(0, 2).map((r, i) => (
@@ -211,7 +264,8 @@ OLLAMA_ENDPOINT=http://localhost:11434/v1 # For Ollama`}
                   </ul>
                 )}
               </div>
-            )}
+              );
+            })()}
           </div>
         </div>
 

@@ -19,24 +19,24 @@ def replace_in_file(filepath, replacements):
         print(f'Error processing {filepath}: {e}')
 
 replacements = {
-    'PETROLQ PLATFORM': 'PETROLQ PLATFORM',
-    'PetrolQ Autonomous AI': 'PetrolQ Autonomous AI',
-    'Official PetrolQ Decision Support Document.': 'Official PetrolQ Decision Support Document.',
-    'PETROLQ': 'PETROLQ',
-    'PetrolQ decision suite': 'PetrolQ decision suite',
-    'title PetrolQ Launcher': 'title PetrolQ Launcher',
-    'Starting PetrolQ': 'Starting PetrolQ',
-    'getLogger("PetrolQ")': 'getLogger("PetrolQ")',
-    'Setting up PetrolQ': 'Setting up PetrolQ',
-    'PetrolQ - SIH 2026 Solution': 'PetrolQ - SIH 2026 Solution',
-    '# PetrolQ (Nearby Wells Intelligence System)': '# PetrolQ (Nearby Wells Intelligence System)',
-    'PetrolQ Nearby Wells Intelligence System': 'PetrolQ Nearby Wells Intelligence System',
-    'PetrolQ <span': 'PetrolQ <span',
-    'title="PetrolQ API"': 'title="PetrolQ API"',
-    'PETROLQ-DOSSIER-2026': 'PETROLQ-DOSSIER-2026',
-    'PETROLQ-DOSSIER-': 'PETROLQ-DOSSIER-',
+    'AGATE PLATFORM': 'AGATE PLATFORM',
+    'AGATE Autonomous AI': 'AGATE Autonomous AI',
+    'Official AGATE Decision Support Document.': 'Official AGATE Decision Support Document.',
+    'AGATE': 'AGATE',
+    'AGATE decision suite': 'AGATE decision suite',
+    'title AGATE Launcher': 'title AGATE Launcher',
+    'Starting AGATE': 'Starting AGATE',
+    'getLogger("AGATE")': 'getLogger("AGATE")',
+    'Setting up AGATE': 'Setting up AGATE',
+    'AGATE - SIH 2026 Solution': 'AGATE - SIH 2026 Solution',
+    '# AGATE (Nearby Wells Intelligence System)': '# AGATE (Nearby Wells Intelligence System)',
+    'AGATE Nearby Wells Intelligence System': 'AGATE Nearby Wells Intelligence System',
+    'AGATE <span': 'AGATE <span',
+    'title="AGATE API"': 'title="AGATE API"',
+    'AGATE-DOSSIER-2026': 'AGATE-DOSSIER-2026',
+    'AGATE-DOSSIER-': 'AGATE-DOSSIER-',
     '': '',
-    'PetrolQ': 'PetrolQ'
+    'AGATE': 'AGATE'
 }
 
 for root, _, files in os.walk('.'):

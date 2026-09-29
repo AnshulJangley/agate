@@ -1,4 +1,4 @@
-# PetrolQ — System Architecture Specification
+# AGATE — System Architecture Specification
 
 > **Enterprise-Grade, Offline-First Nearby Wells Intelligence & Real-Time Decision Support System for Oil & Gas Drilling Operations**  
 > *Developed for the Smart India Hackathon (SIH) 2026*
@@ -11,7 +11,7 @@ Drilling complex directional and deep exploration wells in geologically demandin
 
 While modern drilling rigs employ digital real-time monitoring systems (e.g., eRTMAC, mud logging units, and SCADA telemetry), operational decisions remain critically hampered because **historical offset-well knowledge resides trapped in unstructured Daily Drilling Reports (DDRs), Well Completion Reports (WCRs), and scattered end-of-well summaries**.
 
-**PetrolQ** is engineered as an **offline-first, edge-ready, AI-augmented Nearby Wells Intelligence System** that acts as an institutional memory alongside active monitoring systems. The platform adheres to six architectural principles:
+**AGATE** is engineered as an **offline-first, edge-ready, AI-augmented Nearby Wells Intelligence System** that acts as an institutional memory alongside active monitoring systems. The platform adheres to six architectural principles:
 
 1. **Physics-First Hybrid Reasoning**: Machine learning models never operate in an unconstrained statistical vacuum; predictions are anchored in classical petroleum mechanics (Teale MSE, Jorden & Shirley $d_{xc}$, Eaton PPFG).
 2. **Deterministic Safety Guardrails**: AI-generated responses pass through a strict validation layer that prevents confidence inflation, blocks citation fabrication, and rejects any autonomous rig hardware commands.
@@ -139,9 +139,9 @@ flowchart TB
 
 ## 3. Physics + ML Hybrid Hazard Engine
 
-A central innovation of PetrolQ is its **hybrid 80/20 scoring architecture**. In petroleum drilling engineering, purely statistical ML models trained on small or synthetically supplemented historical datasets risk producing false negatives during rare geomechanical events. Conversely, purely theoretical formulas lack adaptability to micro-variations in formation lithology.
+A central innovation of AGATE is its **hybrid 80/20 scoring architecture**. In petroleum drilling engineering, purely statistical ML models trained on small or synthetically supplemented historical datasets risk producing false negatives during rare geomechanical events. Conversely, purely theoretical formulas lack adaptability to micro-variations in formation lithology.
 
-PetrolQ fuses deterministic physics with gradient-boosted decision trees using the following governing relation:
+AGATE fuses deterministic physics with gradient-boosted decision trees using the following governing relation:
 
 $$P_{\text{hazard}} = 0.80 \cdot P_{\text{physics}} + 0.20 \cdot P_{\text{ML}}$$
 
@@ -275,11 +275,11 @@ flowchart LR
 
 ## 5. Retrieval & Search Architecture
 
-To provide instant, trustworthy offset-well intelligence, PetrolQ deploys a **Multi-Signal Hybrid Retrieval Engine** combining geological, spatial, lexical, and semantic relevance.
+To provide instant, trustworthy offset-well intelligence, AGATE deploys a **Multi-Signal Hybrid Retrieval Engine** combining geological, spatial, lexical, and semantic relevance.
 
 ### 5.1. Analytic Hierarchy Process (AHP) Weight Derivation
 
-Rather than relying on ad-hoc heuristic weights, PetrolQ derives its hybrid ranking weights through the **Analytic Hierarchy Process (Saaty, 1980)** via principal eigenvector decomposition of a domain-calibrated pairwise comparison matrix:
+Rather than relying on ad-hoc heuristic weights, AGATE derives its hybrid ranking weights through the **Analytic Hierarchy Process (Saaty, 1980)** via principal eigenvector decomposition of a domain-calibrated pairwise comparison matrix:
 
 * **Code Implementation**: `backend/services/ahp_weights.py` & `backend/services/hybrid_retrieval.py`
 * **Citation**: Saaty, T.L. (1980), *"The Analytic Hierarchy Process"*, McGraw-Hill, New York.
@@ -321,7 +321,7 @@ Rather than relying on ad-hoc heuristic weights, PetrolQ derives its hybrid rank
 
 ## 6. AI Safety & Guardrails Validation Layer
 
-In high-consequence oilfield drilling operations, unchecked LLM hallucinations or autonomous command suggestions pose unacceptable safety risks. PetrolQ enforces a dedicated **Guardrails Validation Layer** (`GuardrailsService` in `backend/guardrails/guardrails_service.py`) between all AI reasoning and the user interface.
+In high-consequence oilfield drilling operations, unchecked LLM hallucinations or autonomous command suggestions pose unacceptable safety risks. AGATE enforces a dedicated **Guardrails Validation Layer** (`GuardrailsService` in `backend/guardrails/guardrails_service.py`) between all AI reasoning and the user interface.
 
 ```mermaid
 flowchart TD
@@ -353,7 +353,7 @@ flowchart TD
      * `r"\b(auto-driller|bop|blowout preventer|shut down|shutdown|kill pump|actuate)\b"`
      * `r"\b(set wob to 0|set rpm to 0|halt rig|trigger emergency|override driller)\b"`
      * `r"\b(command control system|direct rig action|execute auto)\b"`
-   * PetrolQ is strictly a **decision-support platform**; any command attempting to actuate equipment triggers an immediate safety block.
+   * AGATE is strictly a **decision-support platform**; any command attempting to actuate equipment triggers an immediate safety block.
 4. **Prompt Injection & Jailbreak Detector**:
    * Inspects free-text reasoning fields for adversarial patterns (`"ignore previous instructions"`, `"system prompt override"`, `"admin mode"`).
 5. **Deterministic Reversion**:
@@ -363,7 +363,7 @@ flowchart TD
 
 ## 7. Time-Travel Backtest Validation Framework
 
-To scientifically validate that PetrolQ provides timely, actionable hazard detection before incidents occur, the system includes a **Time-Travel Backtest Runner** (`backend/services/backtest_runner.py`).
+To scientifically validate that AGATE provides timely, actionable hazard detection before incidents occur, the system includes a **Time-Travel Backtest Runner** (`backend/services/backtest_runner.py`).
 
 * **Causal Replay**: Historical drilling telemetry is replayed strictly chronologically and depth-sequentially row-by-row. At depth $z$, the detection engine has access only to data points $z' \le z$, strictly preventing lookahead leakage.
 * **Benchmark Incidents**: Evaluated against documented historical events:

@@ -1,6 +1,6 @@
-# Contributing to PetrolQ
+# Contributing to AGATE
 
-Thank you for your interest in contributing to **PetrolQ (Nearby Wells Intelligence System)** for the Smart India Hackathon (SIH) 2026! We welcome contributions that improve system accuracy, UI/UX responsiveness, and subsurface data integration.
+Thank you for your interest in contributing to **AGATE (Nearby Wells Intelligence System)** for the Smart India Hackathon (SIH) 2026! We welcome contributions that improve system accuracy, UI/UX responsiveness, and subsurface data integration.
 
 ---
 

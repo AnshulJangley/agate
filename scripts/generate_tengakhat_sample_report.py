@@ -7,7 +7,7 @@ that are distinct from its existing database records.
 import os
 import fitz  # PyMuPDF
 
-def create_tengakhat_ddr(output_path: str = "sample_reports/OIL_Tengakhat_DDR_Well_01.pdf"):
+def create_tengakhat_ddr(output_path: str = "sample_reports/SAMPLE_representative_OIL_Tengakhat_DDR_Well_01.pdf"):
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     
     doc = fitz.open()
@@ -176,7 +176,7 @@ def create_tengakhat_ddr(output_path: str = "sample_reports/OIL_Tengakhat_DDR_We
     
     # Bottom watermark bar
     page.draw_rect(fitz.Rect(36, 765, 559, 785), color=navy, fill=navy)
-    page.insert_text((48, 778), "PETROLQ DIGITAL TWIN INSTITUTIONAL REPOSITORY - CLASSIFIED DRILLING REPORT", fontsize=8, fontname="hebo", color=(1, 1, 1))
+    page.insert_text((48, 778), "AGATE DIGITAL TWIN INSTITUTIONAL REPOSITORY - CLASSIFIED DRILLING REPORT", fontsize=8, fontname="hebo", color=(1, 1, 1))
     page.insert_text((460, 778), "Page 1 of 1", fontsize=8, fontname="helv", color=(0.8, 0.8, 0.8))
     
     doc.save(output_path)

@@ -1,0 +1,41 @@
+{
+  "_about": "Real, publicly documented Indian drilling incidents. Every field below is either sourced or explicitly null — nothing here is invented. Facts were compiled from public records, not from Oil India's confidential archive (which is not releasable to SIH teams).",
+  "_sources": {
+    "ngt_katakey": "NGT Expert Committee (Justice B.P. Katakey) progress reports, OA No. 43 of 2020 (EZ), Bonani Kakkar vs. Oil India Ltd — greentribunal.gov.in",
+    "oisd": "Oil Industry Safety Directorate investigation findings as reported to the Ministry of Petroleum & Natural Gas (Rajya Sabha / Lok Sabha petroleum papers)",
+    "spe_206602": "Bharadwaj, Kumari & Patel, 'Managing Gas Well Blowouts: Case Studies from Assam-Arakan & Krishna-Godavari Basin', SPE-206602-MS, SPE Russian Petroleum Technology Conference, 2021. DOI 10.2118/206602-MS"
+  },
+  "_caveat": "These are incident narratives, not daily drilling reports. Depths, pressures and root causes are as published; npt_hours is null wherever the public record does not state a figure rather than being estimated.",
+  "events": [
+    {
+      "event_id": "EVT-IN-BGN5-2020",
+      "well_id": "OIL-BAGHJAN-5",
+      "depth_start_tvd": 3731.5,
+      "depth_end_tvd": 3737.5,
+      "formation": "Langpar",
+      "event_type": "Kick",
+      "severity": "Critical",
+      "root_cause": "Loss of secondary well barrier during workover. The cement plug was placed at approximately 1,000 m TVD — about 2,700 m above the perforated zone it was meant to isolate — in a 26-27 degree inclined section, using 254 gallons of 114 pcf slurry at a bottom-hole circulating temperature of 46 C. The plug was neither tagged nor pressure-tested, so the unset cement percolated and the slurry column behaved as a water column, lightening the hydrostatic head. The BOP was nippled down and the drill pipe pulled before the cement had fully set, removing the primary barrier. Gas percolated up the diluted brine column and the well became active and blew out within about 1.5 hours.",
+      "mitigation_applied": "Well killed on 15 November 2020 after approximately 5.5 months uncontrolled; intervention included reinstating well control equipment, sustained water spraying to cool the wellhead, and drilling relief wells. SPE-206602-MS recommends placing two or three backup cement plugs together with kill fluid, or squeeze cementing before setting the abandonment plug, and monitoring sustained casing pressure (SCP), operator-imposed pressure (OIP) and thermal-induced pressure (TIP) periodically.",
+      "npt_hours": 4128.0,
+      "data_source": "incident_report_real",
+      "source_citation": "NGT Katakey Committee; OISD; SPE-206602-MS",
+      "notes": "Baghjan-5, Tinsukia district, Assam. Completed March 2007 at 3,904 m MD. Was producing ~80,000 SCMD from the 3,870 m Langpar Sand; the 2020 workover bridge-plugged that zone at 3,865 m and recompleted to Lk+Th SG I+II at 3,729 m, perforated 18-May-2020. Two fatalities; OIL reported ~Rs 148 crore revenue loss from shut-in surrounding wells; disciplinary proceedings against 18 executives."
+    },
+    {
+      "event_id": "EVT-IN-PAS-1995",
+      "well_id": "OIL-KG-PASARLAPUDI-1",
+      "depth_start_tvd": 2727.0,
+      "depth_end_tvd": 2727.0,
+      "formation": null,
+      "event_type": "Stuck Pipe",
+      "severity": "Critical",
+      "root_cause": "Pipe became stuck at 2,727 m MD while drilling the 8.5 inch production hole, detected by a stretch test. The well subsequently lost control and blew out with a gas pressure of 281.2 kg/cm2. Suspected mechanisms for the initial stuck-up were differential pressure sticking, a water-swelling clay formation, or partial collapse of the wellbore.",
+      "mitigation_applied": "Circulated brine to address the swelling-clay mechanism; checked for and cured lost circulation while keeping the hole full; attempted to identify casing leaks by measuring sustained casing pressure (SCP), operator-imposed pressure (OIP) and thermal-induced pressure (TIP). SPE-206602-MS notes that formation collapse of this kind can originate in plastic formations such as salt domes.",
+      "npt_hours": null,
+      "data_source": "incident_report_real",
+      "source_citation": "SPE-206602-MS (2019 / 2021)",
+      "notes": "Pasarlapudi, Krishna-Godavari basin, 1995. Formation is null because the public case study does not name one - left blank rather than guessed."
+    }
+  ]
+}

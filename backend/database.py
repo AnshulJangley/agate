@@ -10,12 +10,12 @@ load_dotenv()
 # Primary database URL (Cloud Supabase or local postgres)
 DATABASE_URL = os.environ.get(
     "DATABASE_URL", 
-    "postgresql://postgres:YOUR_PASSWORD_HERE@localhost:5432/petrolq_nwis"
+    "postgresql://postgres:YOUR_PASSWORD_HERE@localhost:5432/agate_nwis"
 ).strip()
 
 LOCAL_FALLBACK_URL = os.environ.get(
     "LOCAL_DATABASE_URL",
-    "postgresql://postgres:postgres@localhost:5432/petrolq_nwis"
+    "postgresql://postgres:postgres@localhost:5432/agate_nwis"
 ).strip()
 
 # Resilient engine configuration with short connection timeout so network dropouts fail over quickly

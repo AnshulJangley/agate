@@ -59,7 +59,7 @@ const ContributeLessonModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1'
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && isOpen) {
-        if (typeof window !== 'undefined' && window.location.search.includes('module=')) {
+        if (typeof window !== 'undefined' && window.location.search.includes(' module=')) {
           window.close();
         }
         onClose();
@@ -99,7 +99,7 @@ const ContributeLessonModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1'
         onLessonContributed(res.data);
       }
     } catch (err) {
-      console.error('Failed to contribute lesson:', err);
+      console.error('Failed to contribute lesson: ', err);
       setError(err.response?.data?.detail || 'Failed to submit lesson to institutional memory.');
     } finally {
       setSubmitting(false);
@@ -167,7 +167,7 @@ const ContributeLessonModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1'
 
             <button 
               onClick={() => {
-                if (typeof window !== 'undefined' && window.location.search.includes('module=')) {
+                if (typeof window !== 'undefined' && window.location.search.includes(' module=')) {
                   window.close();
                 }
                 onClose();

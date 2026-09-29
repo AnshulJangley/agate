@@ -470,11 +470,11 @@ def get_stratigraphic_cross_section(
                 "name": "Tanot-1 (West Offset)",
                 "x_offset_km": 0.0, "kb_elevation_m": 165.0, "total_depth_tvd_m": 2900.0, "is_active": False,
                 "formations": [
-                    {"name": "Desert Alluvium", "top_tvd": 0.0, "base_tvd": 450.0, "color": "#64748B", "lithology": "Dune Sand & Gravels"},
-                    {"name": "Pariwar Formation", "top_tvd": 450.0, "base_tvd": 1150.0, "color": "#FCD34D", "lithology": "Abrasive Quartz Sandstone"},
-                    {"name": "Baisakhi Formation", "top_tvd": 1150.0, "base_tvd": 1750.0, "color": "#9CA3AF", "lithology": "Tight Laminated Shale / Siltstone"},
-                    {"name": "Jodhpur Sandstone", "top_tvd": 1750.0, "base_tvd": 2250.0, "color": "#D97706", "lithology": "Porous Heavy Oil Sandstone"},
-                    {"name": "Bilara Carbonates", "top_tvd": 2250.0, "base_tvd": 2900.0, "color": "#94A3B8", "lithology": "Cavernous Karst Dolomite"}
+                    {"name": "Desert Alluvium", "top_tvd": 0.0, "base_tvd": 450.0, "color": "#737373", "lithology": "Dune Sand & Gravels"},
+                    {"name": "Pariwar Formation", "top_tvd": 450.0, "base_tvd": 1150.0, "color": "#D7D7D7", "lithology": "Abrasive Quartz Sandstone"},
+                    {"name": "Baisakhi Formation", "top_tvd": 1150.0, "base_tvd": 1750.0, "color": "#A2A2A2", "lithology": "Tight Laminated Shale / Siltstone"},
+                    {"name": "Jodhpur Sandstone", "top_tvd": 1750.0, "base_tvd": 2250.0, "color": "#909090", "lithology": "Porous Heavy Oil Sandstone"},
+                    {"name": "Bilara Carbonates", "top_tvd": 2250.0, "base_tvd": 2900.0, "color": "#A2A2A2", "lithology": "Cavernous Karst Dolomite"}
                 ],
                 "incidents": [
                     {"depth_tvd": 1120.0, "type": "Seepage Loss (22 bbl)", "severity": "MEDIUM", "formation": "Pariwar Formation"},
@@ -486,11 +486,11 @@ def get_stratigraphic_cross_section(
                 "name": f"{active_well} (Active Planned Well)",
                 "x_offset_km": 18.2, "kb_elevation_m": 172.0, "total_depth_tvd_m": 3100.0, "is_active": True,
                 "formations": [
-                    {"name": "Desert Alluvium", "top_tvd": 0.0, "base_tvd": 500.0, "color": "#64748B", "lithology": "Surface Sand Beds"},
-                    {"name": "Pariwar Formation", "top_tvd": 500.0, "base_tvd": 1200.0, "color": "#FCD34D", "lithology": "Coarse Abrasive Sand"},
-                    {"name": "Baisakhi Formation", "top_tvd": 1200.0, "base_tvd": 1800.0, "color": "#9CA3AF", "lithology": "Tight Marine Siltstone"},
-                    {"name": "Jodhpur Sandstone", "top_tvd": 1800.0, "base_tvd": 2300.0, "color": "#D97706", "lithology": "Viscous Crude Sand Reservoir"},
-                    {"name": "Bilara Carbonates", "top_tvd": 2300.0, "base_tvd": 3100.0, "color": "#94A3B8", "lithology": "Vugular Dolomite & Lost Circulation Zone"}
+                    {"name": "Desert Alluvium", "top_tvd": 0.0, "base_tvd": 500.0, "color": "#737373", "lithology": "Surface Sand Beds"},
+                    {"name": "Pariwar Formation", "top_tvd": 500.0, "base_tvd": 1200.0, "color": "#D7D7D7", "lithology": "Coarse Abrasive Sand"},
+                    {"name": "Baisakhi Formation", "top_tvd": 1200.0, "base_tvd": 1800.0, "color": "#A2A2A2", "lithology": "Tight Marine Siltstone"},
+                    {"name": "Jodhpur Sandstone", "top_tvd": 1800.0, "base_tvd": 2300.0, "color": "#909090", "lithology": "Viscous Crude Sand Reservoir"},
+                    {"name": "Bilara Carbonates", "top_tvd": 2300.0, "base_tvd": 3100.0, "color": "#A2A2A2", "lithology": "Vugular Dolomite & Lost Circulation Zone"}
                 ],
                 "incidents": []
             },
@@ -499,11 +499,11 @@ def get_stratigraphic_cross_section(
                 "name": "Baghewala-2 (East Offset)",
                 "x_offset_km": 20.6, "kb_elevation_m": 178.0, "total_depth_tvd_m": 3180.0, "is_active": False,
                 "formations": [
-                    {"name": "Desert Alluvium", "top_tvd": 0.0, "base_tvd": 520.0, "color": "#64748B", "lithology": "Shallow Gravels"},
-                    {"name": "Pariwar Formation", "top_tvd": 520.0, "base_tvd": 1230.0, "color": "#FCD34D", "lithology": "Porous Sandstone"},
-                    {"name": "Baisakhi Formation", "top_tvd": 1230.0, "base_tvd": 1840.0, "color": "#9CA3AF", "lithology": "Compacted Shale"},
-                    {"name": "Jodhpur Sandstone", "top_tvd": 1840.0, "base_tvd": 2350.0, "color": "#D97706", "lithology": "Bitumen & Heavy Oil Sand"},
-                    {"name": "Bilara Carbonates", "top_tvd": 2350.0, "base_tvd": 3180.0, "color": "#94A3B8", "lithology": "Severe Karstified Limestone"}
+                    {"name": "Desert Alluvium", "top_tvd": 0.0, "base_tvd": 520.0, "color": "#737373", "lithology": "Shallow Gravels"},
+                    {"name": "Pariwar Formation", "top_tvd": 520.0, "base_tvd": 1230.0, "color": "#D7D7D7", "lithology": "Porous Sandstone"},
+                    {"name": "Baisakhi Formation", "top_tvd": 1230.0, "base_tvd": 1840.0, "color": "#A2A2A2", "lithology": "Compacted Shale"},
+                    {"name": "Jodhpur Sandstone", "top_tvd": 1840.0, "base_tvd": 2350.0, "color": "#909090", "lithology": "Bitumen & Heavy Oil Sand"},
+                    {"name": "Bilara Carbonates", "top_tvd": 2350.0, "base_tvd": 3180.0, "color": "#A2A2A2", "lithology": "Severe Karstified Limestone"}
                 ],
                 "incidents": [
                     {"depth_tvd": 2180.0, "type": "Differential Sticking (18 hrs)", "severity": "HIGH", "formation": "Jodhpur Sandstone"},
@@ -512,10 +512,10 @@ def get_stratigraphic_cross_section(
             }
         ]
         tie_lines = [
-            {"formation": "Pariwar Formation", "color": "#FCD34D", "tops": [450.0, 500.0, 520.0], "structural_dip_trend": "Gentle east-dipping desert shelf (< 1.5 deg)"},
-            {"formation": "Baisakhi Formation", "color": "#9CA3AF", "tops": [1150.0, 1200.0, 1230.0], "structural_dip_trend": "Uniform regional seal interval"},
-            {"formation": "Jodhpur Sandstone", "color": "#D97706", "tops": [1750.0, 1800.0, 1840.0], "structural_dip_trend": "Main heavy oil pay interval deepening eastward"},
-            {"formation": "Bilara Carbonates", "color": "#94A3B8", "tops": [2250.0, 2300.0, 2350.0], "structural_dip_trend": "Cavernous carbonate basement with extensive karstification"}
+            {"formation": "Pariwar Formation", "color": "#D7D7D7", "tops": [450.0, 500.0, 520.0], "structural_dip_trend": "Gentle east-dipping desert shelf (< 1.5 deg)"},
+            {"formation": "Baisakhi Formation", "color": "#A2A2A2", "tops": [1150.0, 1200.0, 1230.0], "structural_dip_trend": "Uniform regional seal interval"},
+            {"formation": "Jodhpur Sandstone", "color": "#909090", "tops": [1750.0, 1800.0, 1840.0], "structural_dip_trend": "Main heavy oil pay interval deepening eastward"},
+            {"formation": "Bilara Carbonates", "color": "#A2A2A2", "tops": [2250.0, 2300.0, 2350.0], "structural_dip_trend": "Cavernous carbonate basement with extensive karstification"}
         ]
         geo_summary = (
             "Regional structural cross-section across the Rajasthan Basin (Jaisalmer/Barmer). "
@@ -530,11 +530,11 @@ def get_stratigraphic_cross_section(
                 "name": "Yanam-1 (Shelf / Shallow Water)",
                 "x_offset_km": 0.0, "kb_elevation_m": 25.0, "total_depth_tvd_m": 4100.0, "is_active": False,
                 "formations": [
-                    {"name": "Seafloor Sediments", "top_tvd": 0.0, "base_tvd": 700.0, "color": "#64748B", "lithology": "Unconsolidated Clays"},
-                    {"name": "Shallow Marine / SWF", "top_tvd": 700.0, "base_tvd": 1100.0, "color": "#38BDF8", "lithology": "Overpressured Silt / Hydrates"},
-                    {"name": "Godavari Gumbo", "top_tvd": 1100.0, "base_tvd": 2100.0, "color": "#3F6212", "lithology": "High-Plasticity Gumbo Clay"},
-                    {"name": "Ravva Formation", "top_tvd": 2100.0, "base_tvd": 3200.0, "color": "#DC2626", "lithology": "Slope Turbidite Gas Sand"},
-                    {"name": "Cretaceous HPHT", "top_tvd": 3200.0, "base_tvd": 4100.0, "color": "#7C3AED", "lithology": "HPHT Fractured Tight Sand"}
+                    {"name": "Seafloor Sediments", "top_tvd": 0.0, "base_tvd": 700.0, "color": "#737373", "lithology": "Unconsolidated Clays"},
+                    {"name": "Shallow Marine / SWF", "top_tvd": 700.0, "base_tvd": 1100.0, "color": "#B1B1B1", "lithology": "Overpressured Silt / Hydrates"},
+                    {"name": "Godavari Gumbo", "top_tvd": 1100.0, "base_tvd": 2100.0, "color": "#585858", "lithology": "High-Plasticity Gumbo Clay"},
+                    {"name": "Ravva Formation", "top_tvd": 2100.0, "base_tvd": 3200.0, "color": "#727272", "lithology": "Slope Turbidite Gas Sand"},
+                    {"name": "Cretaceous HPHT", "top_tvd": 3200.0, "base_tvd": 4100.0, "color": "#676767", "lithology": "HPHT Fractured Tight Sand"}
                 ],
                 "incidents": [
                     {"depth_tvd": 780.0, "type": "Shallow Water Flow Influx", "severity": "HIGH", "formation": "Shallow Marine / SWF"},
@@ -546,11 +546,11 @@ def get_stratigraphic_cross_section(
                 "name": f"{active_well} (Deepwater Planned)",
                 "x_offset_km": 24.5, "kb_elevation_m": 30.0, "total_depth_tvd_m": 4500.0, "is_active": True,
                 "formations": [
-                    {"name": "Seafloor Sediments", "top_tvd": 0.0, "base_tvd": 800.0, "color": "#64748B", "lithology": "Deep Pelagic Mud"},
-                    {"name": "Shallow Marine / SWF", "top_tvd": 800.0, "base_tvd": 1300.0, "color": "#38BDF8", "lithology": "Gas Hydrate / Silt Bed"},
-                    {"name": "Godavari Gumbo", "top_tvd": 1300.0, "base_tvd": 2350.0, "color": "#3F6212", "lithology": "Reactive Smectite Mudstone"},
-                    {"name": "Ravva Formation", "top_tvd": 2350.0, "base_tvd": 3500.0, "color": "#DC2626", "lithology": "Overpressured Gas Sandstone"},
-                    {"name": "Cretaceous HPHT", "top_tvd": 3500.0, "base_tvd": 4500.0, "color": "#7C3AED", "lithology": "Ultra-HPHT Hard Basement"}
+                    {"name": "Seafloor Sediments", "top_tvd": 0.0, "base_tvd": 800.0, "color": "#737373", "lithology": "Deep Pelagic Mud"},
+                    {"name": "Shallow Marine / SWF", "top_tvd": 800.0, "base_tvd": 1300.0, "color": "#B1B1B1", "lithology": "Gas Hydrate / Silt Bed"},
+                    {"name": "Godavari Gumbo", "top_tvd": 1300.0, "base_tvd": 2350.0, "color": "#585858", "lithology": "Reactive Smectite Mudstone"},
+                    {"name": "Ravva Formation", "top_tvd": 2350.0, "base_tvd": 3500.0, "color": "#727272", "lithology": "Overpressured Gas Sandstone"},
+                    {"name": "Cretaceous HPHT", "top_tvd": 3500.0, "base_tvd": 4500.0, "color": "#676767", "lithology": "Ultra-HPHT Hard Basement"}
                 ],
                 "incidents": []
             },
@@ -559,11 +559,11 @@ def get_stratigraphic_cross_section(
                 "name": "KG-DWN-98/2 (Deepwater Offset)",
                 "x_offset_km": 28.7, "kb_elevation_m": 32.0, "total_depth_tvd_m": 4680.0, "is_active": False,
                 "formations": [
-                    {"name": "Seafloor Sediments", "top_tvd": 0.0, "base_tvd": 850.0, "color": "#64748B", "lithology": "Hemipelagic Ooze"},
-                    {"name": "Shallow Marine / SWF", "top_tvd": 850.0, "base_tvd": 1380.0, "color": "#38BDF8", "lithology": "Shallow Water Flow Sand"},
-                    {"name": "Godavari Gumbo", "top_tvd": 1380.0, "base_tvd": 2420.0, "color": "#3F6212", "lithology": "Swelling Gumbo Shale"},
-                    {"name": "Ravva Formation", "top_tvd": 2420.0, "base_tvd": 3580.0, "color": "#DC2626", "lithology": "Turbidite Channel Sand"},
-                    {"name": "Cretaceous HPHT", "top_tvd": 3580.0, "base_tvd": 4680.0, "color": "#7C3AED", "lithology": "Fractured HPHT Basement"}
+                    {"name": "Seafloor Sediments", "top_tvd": 0.0, "base_tvd": 850.0, "color": "#737373", "lithology": "Hemipelagic Ooze"},
+                    {"name": "Shallow Marine / SWF", "top_tvd": 850.0, "base_tvd": 1380.0, "color": "#B1B1B1", "lithology": "Shallow Water Flow Sand"},
+                    {"name": "Godavari Gumbo", "top_tvd": 1380.0, "base_tvd": 2420.0, "color": "#585858", "lithology": "Swelling Gumbo Shale"},
+                    {"name": "Ravva Formation", "top_tvd": 2420.0, "base_tvd": 3580.0, "color": "#727272", "lithology": "Turbidite Channel Sand"},
+                    {"name": "Cretaceous HPHT", "top_tvd": 3580.0, "base_tvd": 4680.0, "color": "#676767", "lithology": "Fractured HPHT Basement"}
                 ],
                 "incidents": [
                     {"depth_tvd": 1540.0, "type": "Severe Bit Balling / Packoff", "severity": "HIGH", "formation": "Godavari Gumbo"},
@@ -572,10 +572,10 @@ def get_stratigraphic_cross_section(
             }
         ]
         tie_lines = [
-            {"formation": "Shallow Marine / SWF", "color": "#38BDF8", "tops": [700.0, 800.0, 850.0], "structural_dip_trend": "Continental slope deepening bathymetry"},
-            {"formation": "Godavari Gumbo", "color": "#3F6212", "tops": [1100.0, 1300.0, 1380.0], "structural_dip_trend": "Thickening deepwater prodelta mud complex"},
-            {"formation": "Ravva Formation", "color": "#DC2626", "tops": [2100.0, 2350.0, 2420.0], "structural_dip_trend": "Deep submarine fan channels with narrow PP-FG window"},
-            {"formation": "Cretaceous HPHT", "color": "#7C3AED", "tops": [3200.0, 3500.0, 3580.0], "structural_dip_trend": "Regional high-temperature basement horizon"}
+            {"formation": "Shallow Marine / SWF", "color": "#B1B1B1", "tops": [700.0, 800.0, 850.0], "structural_dip_trend": "Continental slope deepening bathymetry"},
+            {"formation": "Godavari Gumbo", "color": "#585858", "tops": [1100.0, 1300.0, 1380.0], "structural_dip_trend": "Thickening deepwater prodelta mud complex"},
+            {"formation": "Ravva Formation", "color": "#727272", "tops": [2100.0, 2350.0, 2420.0], "structural_dip_trend": "Deep submarine fan channels with narrow PP-FG window"},
+            {"formation": "Cretaceous HPHT", "color": "#676767", "tops": [3200.0, 3500.0, 3580.0], "structural_dip_trend": "Regional high-temperature basement horizon"}
         ]
         geo_summary = (
             "Regional offshore cross-section across Krishna-Godavari deepwater slope. "
@@ -590,11 +590,11 @@ def get_stratigraphic_cross_section(
                 "name": "Mamit-1 (West Syncline)",
                 "x_offset_km": 0.0, "kb_elevation_m": 420.0, "total_depth_tvd_m": 4350.0, "is_active": False,
                 "formations": [
-                    {"name": "Surface Weathered Zone", "top_tvd": 0.0, "base_tvd": 600.0, "color": "#64748B", "lithology": "Fractured Siltstone"},
-                    {"name": "Bokabil Formation", "top_tvd": 600.0, "base_tvd": 1600.0, "color": "#F59E0B", "lithology": "Interbedded Sand-Shale"},
-                    {"name": "Upper Bhuban", "top_tvd": 1600.0, "base_tvd": 2600.0, "color": "#B45309", "lithology": "High Stress Marine Shale"},
-                    {"name": "Middle Bhuban", "top_tvd": 2600.0, "base_tvd": 3500.0, "color": "#78350F", "lithology": "Steeply Dipping Hard Shales"},
-                    {"name": "Disang Flysch", "top_tvd": 3500.0, "base_tvd": 4350.0, "color": "#475569", "lithology": "Crushed Tectonic Flysch"}
+                    {"name": "Surface Weathered Zone", "top_tvd": 0.0, "base_tvd": 600.0, "color": "#737373", "lithology": "Fractured Siltstone"},
+                    {"name": "Bokabil Formation", "top_tvd": 600.0, "base_tvd": 1600.0, "color": "#B1B1B1", "lithology": "Interbedded Sand-Shale"},
+                    {"name": "Upper Bhuban", "top_tvd": 1600.0, "base_tvd": 2600.0, "color": "#6F6F6F", "lithology": "High Stress Marine Shale"},
+                    {"name": "Middle Bhuban", "top_tvd": 2600.0, "base_tvd": 3500.0, "color": "#494949", "lithology": "Steeply Dipping Hard Shales"},
+                    {"name": "Disang Flysch", "top_tvd": 3500.0, "base_tvd": 4350.0, "color": "#545454", "lithology": "Crushed Tectonic Flysch"}
                 ],
                 "incidents": [
                     {"depth_tvd": 1380.0, "type": "Borehole Ovalization / Drag", "severity": "MEDIUM", "formation": "Bokabil Formation"},
@@ -606,11 +606,11 @@ def get_stratigraphic_cross_section(
                 "name": f"{active_well} (Anticline Planned)",
                 "x_offset_km": 21.0, "kb_elevation_m": 485.0, "total_depth_tvd_m": 4200.0, "is_active": True,
                 "formations": [
-                    {"name": "Surface Weathered Zone", "top_tvd": 0.0, "base_tvd": 550.0, "color": "#64748B", "lithology": "Surface Sandstones"},
-                    {"name": "Bokabil Formation", "top_tvd": 550.0, "base_tvd": 1500.0, "color": "#F59E0B", "lithology": "Laminated Mudstone"},
-                    {"name": "Upper Bhuban", "top_tvd": 1500.0, "base_tvd": 2500.0, "color": "#B45309", "lithology": "Stressed Hard Siltstone"},
-                    {"name": "Middle Bhuban", "top_tvd": 2500.0, "base_tvd": 3400.0, "color": "#78350F", "lithology": "45-deg Dipping Splintery Shale"},
-                    {"name": "Disang Flysch", "top_tvd": 3400.0, "base_tvd": 4200.0, "color": "#475569", "lithology": "Overpressured Sheared Flysch"}
+                    {"name": "Surface Weathered Zone", "top_tvd": 0.0, "base_tvd": 550.0, "color": "#737373", "lithology": "Surface Sandstones"},
+                    {"name": "Bokabil Formation", "top_tvd": 550.0, "base_tvd": 1500.0, "color": "#B1B1B1", "lithology": "Laminated Mudstone"},
+                    {"name": "Upper Bhuban", "top_tvd": 1500.0, "base_tvd": 2500.0, "color": "#6F6F6F", "lithology": "Stressed Hard Siltstone"},
+                    {"name": "Middle Bhuban", "top_tvd": 2500.0, "base_tvd": 3400.0, "color": "#494949", "lithology": "45-deg Dipping Splintery Shale"},
+                    {"name": "Disang Flysch", "top_tvd": 3400.0, "base_tvd": 4200.0, "color": "#545454", "lithology": "Overpressured Sheared Flysch"}
                 ],
                 "incidents": []
             },
@@ -619,11 +619,11 @@ def get_stratigraphic_cross_section(
                 "name": "Champhai-1 (East Limb)",
                 "x_offset_km": 29.5, "kb_elevation_m": 530.0, "total_depth_tvd_m": 4500.0, "is_active": False,
                 "formations": [
-                    {"name": "Surface Weathered Zone", "top_tvd": 0.0, "base_tvd": 620.0, "color": "#64748B", "lithology": "Fractured Outcrop"},
-                    {"name": "Bokabil Formation", "top_tvd": 620.0, "base_tvd": 1650.0, "color": "#F59E0B", "lithology": "Alternating Silt-Sand"},
-                    {"name": "Upper Bhuban", "top_tvd": 1650.0, "base_tvd": 2680.0, "color": "#B45309", "lithology": "High Stress Shale"},
-                    {"name": "Middle Bhuban", "top_tvd": 2680.0, "base_tvd": 3600.0, "color": "#78350F", "lithology": "Steep Bedding Packoff Zone"},
-                    {"name": "Disang Flysch", "top_tvd": 3600.0, "base_tvd": 4500.0, "color": "#475569", "lithology": "Crushed Tectonic Thrust Zone"}
+                    {"name": "Surface Weathered Zone", "top_tvd": 0.0, "base_tvd": 620.0, "color": "#737373", "lithology": "Fractured Outcrop"},
+                    {"name": "Bokabil Formation", "top_tvd": 620.0, "base_tvd": 1650.0, "color": "#B1B1B1", "lithology": "Alternating Silt-Sand"},
+                    {"name": "Upper Bhuban", "top_tvd": 1650.0, "base_tvd": 2680.0, "color": "#6F6F6F", "lithology": "High Stress Shale"},
+                    {"name": "Middle Bhuban", "top_tvd": 2680.0, "base_tvd": 3600.0, "color": "#494949", "lithology": "Steep Bedding Packoff Zone"},
+                    {"name": "Disang Flysch", "top_tvd": 3600.0, "base_tvd": 4500.0, "color": "#545454", "lithology": "Crushed Tectonic Thrust Zone"}
                 ],
                 "incidents": [
                     {"depth_tvd": 3140.0, "type": "Catastrophic Stuck Pipe (36 hrs NPT)", "severity": "CRITICAL", "formation": "Middle Bhuban"},
@@ -632,10 +632,10 @@ def get_stratigraphic_cross_section(
             }
         ]
         tie_lines = [
-            {"formation": "Bokabil Formation", "color": "#F59E0B", "tops": [600.0, 550.0, 620.0], "structural_dip_trend": "Folded anticline crest at Aizawl planned well"},
-            {"formation": "Upper Bhuban", "color": "#B45309", "tops": [1600.0, 1500.0, 1650.0], "structural_dip_trend": "Tectonic compressive stress zone with horizontal anisotropy"},
-            {"formation": "Middle Bhuban", "color": "#78350F", "tops": [2600.0, 2500.0, 2680.0], "structural_dip_trend": "Critical 45-deg dipping bed packoff risk zone"},
-            {"formation": "Disang Flysch", "color": "#475569", "tops": [3500.0, 3400.0, 3600.0], "structural_dip_trend": "Regional overpressured thrust fault complex"}
+            {"formation": "Bokabil Formation", "color": "#B1B1B1", "tops": [600.0, 550.0, 620.0], "structural_dip_trend": "Folded anticline crest at Aizawl planned well"},
+            {"formation": "Upper Bhuban", "color": "#6F6F6F", "tops": [1600.0, 1500.0, 1650.0], "structural_dip_trend": "Tectonic compressive stress zone with horizontal anisotropy"},
+            {"formation": "Middle Bhuban", "color": "#494949", "tops": [2600.0, 2500.0, 2680.0], "structural_dip_trend": "Critical 45-deg dipping bed packoff risk zone"},
+            {"formation": "Disang Flysch", "color": "#545454", "tops": [3500.0, 3400.0, 3600.0], "structural_dip_trend": "Regional overpressured thrust fault complex"}
         ]
         geo_summary = (
             "Regional structural cross-section across the Mizoram Fold and Thrust Belt. "
@@ -651,11 +651,11 @@ def get_stratigraphic_cross_section(
                 "name": "Naharkatiya-1 (West Offset)",
                 "x_offset_km": 0.0, "kb_elevation_m": 108.0, "total_depth_tvd_m": 3450.0, "is_active": False,
                 "formations": [
-                    {"name": "Alluvium / Dihing", "top_tvd": 0.0, "base_tvd": 1050.0, "color": "#64748B", "lithology": "Unconsolidated Gravels & Sands"},
-                    {"name": "Tipam Sandstone", "top_tvd": 1050.0, "base_tvd": 2040.0, "color": "#EAB308", "lithology": "Coarse Permeable Sandstone / Aquifers"},
-                    {"name": "Barail Formation", "top_tvd": 2040.0, "base_tvd": 2820.0, "color": "#F97316", "lithology": "Overpressured Gas Sand & Coal"},
-                    {"name": "Kopili Formation", "top_tvd": 2820.0, "base_tvd": 3250.0, "color": "#A855F7", "lithology": "Deep Marine Fissile Shale"},
-                    {"name": "Jaintia / Basement", "top_tvd": 3250.0, "base_tvd": 3450.0, "color": "#06B6D4", "lithology": "Dense Fossiliferous Limestone"}
+                    {"name": "Alluvium / Dihing", "top_tvd": 0.0, "base_tvd": 1050.0, "color": "#737373", "lithology": "Unconsolidated Gravels & Sands"},
+                    {"name": "Tipam Sandstone", "top_tvd": 1050.0, "base_tvd": 2040.0, "color": "#BBBBBB", "lithology": "Coarse Permeable Sandstone / Aquifers"},
+                    {"name": "Barail Formation", "top_tvd": 2040.0, "base_tvd": 2820.0, "color": "#9A9A9A", "lithology": "Overpressured Gas Sand & Coal"},
+                    {"name": "Kopili Formation", "top_tvd": 2820.0, "base_tvd": 3250.0, "color": "#808080", "lithology": "Deep Marine Fissile Shale"},
+                    {"name": "Jaintia / Basement", "top_tvd": 3250.0, "base_tvd": 3450.0, "color": "#A6A6A6", "lithology": "Dense Fossiliferous Limestone"}
                 ],
                 "incidents": [
                     {"depth_tvd": 1450.0, "type": "Seepage Loss (35 bbl)", "severity": "MEDIUM", "formation": "Tipam Sandstone"},
@@ -667,11 +667,11 @@ def get_stratigraphic_cross_section(
                 "name": f"{active_well} (Active Planned Well)",
                 "x_offset_km": 15.5, "kb_elevation_m": 115.0, "total_depth_tvd_m": 3600.0, "is_active": True,
                 "formations": [
-                    {"name": "Alluvium / Dihing", "top_tvd": 0.0, "base_tvd": 1200.0, "color": "#64748B", "lithology": "Surface Gravels & Clay Beds"},
-                    {"name": "Tipam Sandstone", "top_tvd": 1200.0, "base_tvd": 2400.0, "color": "#EAB308", "lithology": "Massive Bedded Sandstone"},
-                    {"name": "Barail Formation", "top_tvd": 2400.0, "base_tvd": 2950.0, "color": "#F97316", "lithology": "Overpressured Gas/Condensate Sands"},
-                    {"name": "Kopili Formation", "top_tvd": 2950.0, "base_tvd": 3400.0, "color": "#A855F7", "lithology": "Reactive Marine Shales"},
-                    {"name": "Jaintia / Basement", "top_tvd": 3400.0, "base_tvd": 3600.0, "color": "#06B6D4", "lithology": "Basin Limestone & Crystalline Basement"}
+                    {"name": "Alluvium / Dihing", "top_tvd": 0.0, "base_tvd": 1200.0, "color": "#737373", "lithology": "Surface Gravels & Clay Beds"},
+                    {"name": "Tipam Sandstone", "top_tvd": 1200.0, "base_tvd": 2400.0, "color": "#BBBBBB", "lithology": "Massive Bedded Sandstone"},
+                    {"name": "Barail Formation", "top_tvd": 2400.0, "base_tvd": 2950.0, "color": "#9A9A9A", "lithology": "Overpressured Gas/Condensate Sands"},
+                    {"name": "Kopili Formation", "top_tvd": 2950.0, "base_tvd": 3400.0, "color": "#808080", "lithology": "Reactive Marine Shales"},
+                    {"name": "Jaintia / Basement", "top_tvd": 3400.0, "base_tvd": 3600.0, "color": "#A6A6A6", "lithology": "Basin Limestone & Crystalline Basement"}
                 ],
                 "incidents": []
             },
@@ -680,11 +680,11 @@ def get_stratigraphic_cross_section(
                 "name": "Baghjan-4 (East Offset)",
                 "x_offset_km": 17.3, "kb_elevation_m": 118.0, "total_depth_tvd_m": 3550.0, "is_active": False,
                 "formations": [
-                    {"name": "Alluvium / Dihing", "top_tvd": 0.0, "base_tvd": 1215.0, "color": "#64748B", "lithology": "Superficial Gravels"},
-                    {"name": "Tipam Sandstone", "top_tvd": 1215.0, "base_tvd": 2420.0, "color": "#EAB308", "lithology": "Coarse Sandstone"},
-                    {"name": "Barail Formation", "top_tvd": 2420.0, "base_tvd": 2965.0, "color": "#F97316", "lithology": "High Pressure Gas Sandstone & Coal"},
-                    {"name": "Kopili Formation", "top_tvd": 2965.0, "base_tvd": 3420.0, "color": "#A855F7", "lithology": "Marine Fissile Mudstones"},
-                    {"name": "Jaintia / Basement", "top_tvd": 3420.0, "base_tvd": 3550.0, "color": "#06B6D4", "lithology": "Sylhet Limestone Member"}
+                    {"name": "Alluvium / Dihing", "top_tvd": 0.0, "base_tvd": 1215.0, "color": "#737373", "lithology": "Superficial Gravels"},
+                    {"name": "Tipam Sandstone", "top_tvd": 1215.0, "base_tvd": 2420.0, "color": "#BBBBBB", "lithology": "Coarse Sandstone"},
+                    {"name": "Barail Formation", "top_tvd": 2420.0, "base_tvd": 2965.0, "color": "#9A9A9A", "lithology": "High Pressure Gas Sandstone & Coal"},
+                    {"name": "Kopili Formation", "top_tvd": 2965.0, "base_tvd": 3420.0, "color": "#808080", "lithology": "Marine Fissile Mudstones"},
+                    {"name": "Jaintia / Basement", "top_tvd": 3420.0, "base_tvd": 3550.0, "color": "#A6A6A6", "lithology": "Sylhet Limestone Member"}
                 ],
                 "incidents": [
                     {"depth_tvd": 2418.0, "type": "Critical Gas Kick (22 bbl, 4200 psi)", "severity": "CRITICAL", "formation": "Barail Formation"},
@@ -693,10 +693,10 @@ def get_stratigraphic_cross_section(
             }
         ]
         tie_lines = [
-            {"formation": "Tipam Sandstone", "color": "#EAB308", "tops": [1050.0, 1200.0, 1215.0], "structural_dip_trend": "Gentle east-northeast regional dip (~1.8 deg)"},
-            {"formation": "Barail Formation", "color": "#F97316", "tops": [2040.0, 2400.0, 2420.0], "structural_dip_trend": "Significant downward dip from Naharkatiya to Baghjan graben (+360m TVD)"},
-            {"formation": "Kopili Formation", "color": "#A855F7", "tops": [2820.0, 2950.0, 2965.0], "structural_dip_trend": "Deep marine regional datum with consistent stratigraphic continuity"},
-            {"formation": "Jaintia / Basement", "color": "#06B6D4", "tops": [3250.0, 3400.0, 3420.0], "structural_dip_trend": "Basin floor slope with potential horst-graben boundary faults"}
+            {"formation": "Tipam Sandstone", "color": "#BBBBBB", "tops": [1050.0, 1200.0, 1215.0], "structural_dip_trend": "Gentle east-northeast regional dip (~1.8 deg)"},
+            {"formation": "Barail Formation", "color": "#9A9A9A", "tops": [2040.0, 2400.0, 2420.0], "structural_dip_trend": "Significant downward dip from Naharkatiya to Baghjan graben (+360m TVD)"},
+            {"formation": "Kopili Formation", "color": "#808080", "tops": [2820.0, 2950.0, 2965.0], "structural_dip_trend": "Deep marine regional datum with consistent stratigraphic continuity"},
+            {"formation": "Jaintia / Basement", "color": "#A6A6A6", "tops": [3250.0, 3400.0, 3420.0], "structural_dip_trend": "Basin floor slope with potential horst-graben boundary faults"}
         ]
         geo_summary = (
             "Regional structural cross-section across the Upper Assam Shelf. "

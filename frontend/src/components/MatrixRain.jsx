@@ -29,10 +29,10 @@ export default function MatrixRain({ opacity = 0.15 }) {
     const drops = new Array(columns).fill(1).map(() => Math.floor(Math.random() * -50));
 
     const render = () => {
-      ctx.fillStyle = 'rgba(10, 15, 13, 0.08)';
+      ctx.fillStyle = 'rgba(14, 14, 14, 0.08)';
       ctx.fillRect(0, 0, width, height);
 
-      ctx.fillStyle = '#10b981'; // Emerald/phosphor green
+      ctx.fillStyle = '#A3A3A3'; // Emerald/phosphor green
       ctx.font = `${fontSize}px monospace`;
 
       for (let i = 0; i < drops.length; i++) {

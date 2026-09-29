@@ -1,3 +1,4 @@
+import { MONO_COLORWAY } from '../lib/mono';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_BASE } from '../lib/api';
@@ -77,7 +78,7 @@ const CorrelationPanel = ({ isOpen, onClose, activeWell, offsetWell, isFullScree
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (e.key === 'Escape' && isOpen) {
-                if (typeof window !== 'undefined' && window.location.search.includes('module=')) {
+                if (typeof window !== 'undefined' && window.location.search.includes(' module=')) {
                     window.close();
                 }
                 onClose();
@@ -127,7 +128,7 @@ const CorrelationPanel = ({ isOpen, onClose, activeWell, offsetWell, isFullScree
                 });
                 setData(response.data);
             } catch (err) {
-                console.warn("API Correlation unavailable, engaging local Rig Edge correlation engine:", err);
+                console.warn("API Correlation unavailable, engaging local Rig Edge correlation engine: ", err);
                 const offlineCorr = evaluateOfflineCorrelation(activeWell, currentOffset);
                 setData(offlineCorr);
                 setError(null);
@@ -152,7 +153,7 @@ const CorrelationPanel = ({ isOpen, onClose, activeWell, offsetWell, isFullScree
                 });
                 setCasingData(res.data);
             } catch (err) {
-                console.warn("API Casing unavailable, using local Rig Edge casing engine:", err);
+                console.warn("API Casing unavailable, using local Rig Edge casing engine: ", err);
                 const offlineCasing = evaluateOfflineCasingCorrelation(activeWell);
                 setCasingData(offlineCasing);
             } finally {
@@ -176,7 +177,7 @@ const CorrelationPanel = ({ isOpen, onClose, activeWell, offsetWell, isFullScree
                 });
                 setStratData(res.data);
             } catch (err) {
-                console.warn("API Cross-section unavailable, using local Rig Edge cross-section:", err);
+                console.warn("API Cross-section unavailable, using local Rig Edge cross-section: ", err);
                 const offlineStrat = evaluateOfflineStratigraphicCrossSection(activeWell);
                 setStratData(offlineStrat);
             } finally {
@@ -202,7 +203,7 @@ const CorrelationPanel = ({ isOpen, onClose, activeWell, offsetWell, isFullScree
             name: activeWell,
             type: 'scatter',
             mode: 'lines',
-            line: { color: '#06B6D4', width: 2 },
+            line: { color: '#A6A6A6', width: 2 },
             xaxis: 'x',
             yaxis: 'y'
         });
@@ -228,7 +229,7 @@ const CorrelationPanel = ({ isOpen, onClose, activeWell, offsetWell, isFullScree
             name: currentOffset,
             type: 'scatter',
             mode: 'lines',
-            line: { color: '#F59E0B', width: 2 },
+            line: { color: '#B1B1B1', width: 2 },
             xaxis: 'x2',
             yaxis: 'y'
         });
@@ -236,7 +237,7 @@ const CorrelationPanel = ({ isOpen, onClose, activeWell, offsetWell, isFullScree
         // 3. Shaded Formation Bands
         const numBands = 7;
         const step = Math.floor(data.mapping.length / numBands);
-        const bandColors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#a855f7'];
+        const bandColors = ['#848484', '#9A9A9A', '#BBBBBB', '#ACACAC', '#858585', '#808080'];
         
         for (let i = 1; i < numBands; i++) {
             const [aIdx, oIdx] = data.mapping[i * step];
@@ -259,8 +260,8 @@ const CorrelationPanel = ({ isOpen, onClose, activeWell, offsetWell, isFullScree
                 yref: 'y', y: (activeY + offsetY) / 2,
                 text: isAligned ? `Layer ${i} Correlated` : `Layer ${i}: ${dip > 0 ? `+${dip}m dip` : `${dip}m dip`}`,
                 showarrow: false,
-                font: { size: 10, color: '#f8fafc', family: 'monospace' },
-                bgcolor: 'rgba(15, 23, 42, 0.85)',
+                font: { size: 10, color: '#FAFAFA', family: 'monospace' },
+                bgcolor: 'rgba(23, 23, 23, 0.85)',
                 bordercolor: color,
                 borderwidth: 1,
                 borderpad: 3
@@ -334,7 +335,7 @@ const CorrelationPanel = ({ isOpen, onClose, activeWell, offsetWell, isFullScree
                                     onClick={() => setIsAligned(!isAligned)}
                                     className={`px-2 sm:px-3 py-1.5 rounded text-[11px] sm:text-xs font-medium border transition flex items-center space-x-1 sm:space-x-1.5 ${
                                         isAligned 
-                                            ? 'bg-cyan-950 border-cyan-500/60 text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.3)]' 
+                                            ? 'bg-cyan-950 border-cyan-500/60 text-cyan-300 shadow-[0_0_12px_rgba(166, 166, 166,0.3)]' 
                                             : 'bg-slate-800 border-slate-700 text-slate-300 hover:border-slate-600'
                                     }`}
                                 >
@@ -372,7 +373,7 @@ const CorrelationPanel = ({ isOpen, onClose, activeWell, offsetWell, isFullScree
 
                         <button
                             onClick={() => {
-                                if (typeof window !== 'undefined' && window.location.search.includes('module=')) {
+                                if (typeof window !== 'undefined' && window.location.search.includes(' module=')) {
                                     window.close();
                                 }
                                 onClose();
@@ -393,13 +394,13 @@ const CorrelationPanel = ({ isOpen, onClose, activeWell, offsetWell, isFullScree
                                 <div className="bg-slate-950/70 border-b border-slate-800/80 px-5 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
                                     <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
                                         <div className="flex items-center space-x-2">
-                                            <span className="w-3.5 h-1 rounded bg-[#06B6D4] inline-block shadow-[0_0_8px_rgba(6,182,212,0.6)]"></span>
+                                            <span className="w-3.5 h-1 rounded bg-[#A6A6A6] inline-block shadow-[0_0_8px_rgba(166, 166, 166,0.6)]"></span>
                                             <span className="text-slate-400">Active Well:</span>
                                             <span className="font-semibold text-cyan-300 font-mono">{activeWell}</span>
                                             <SourceTag source={activeWell} compact={true} />
                                         </div>
                                         <div className="flex items-center space-x-2">
-                                            <span className="w-3.5 h-1 rounded bg-[#F59E0B] inline-block shadow-[0_0_8px_rgba(245,158,11,0.6)]"></span>
+                                            <span className="w-3.5 h-1 rounded bg-[#B1B1B1] inline-block shadow-[0_0_8px_rgba(177, 177, 177,0.6)]"></span>
                                             <span className="text-slate-400">Offset Well:</span>
                                             <select
                                                 value={currentOffset}
@@ -476,6 +477,7 @@ const CorrelationPanel = ({ isOpen, onClose, activeWell, offsetWell, isFullScree
                                         data={traces}
                                         revision={isAligned ? 1 : 0}
                                         layout={{
+                                            colorway: MONO_COLORWAY,
                                             datarevision: isAligned ? 1 : 0,
                                             autosize: true,
                                             margin: { l: 60, r: 40, b: 50, t: 30 },
@@ -485,26 +487,26 @@ const CorrelationPanel = ({ isOpen, onClose, activeWell, offsetWell, isFullScree
                                             xaxis: { 
                                                 domain: [0, 0.45],
                                                 title: 'Active Well GR (API)', 
-                                                gridcolor: '#334155', 
-                                                zerolinecolor: '#334155', 
-                                                color: '#06B6D4'
+                                                gridcolor: '#404040', 
+                                                zerolinecolor: '#404040', 
+                                                color: '#A6A6A6'
                                             },
                                             xaxis2: { 
                                                 domain: [0.55, 1],
                                                 title: 'Offset Well GR (API)', 
-                                                gridcolor: '#334155', 
-                                                zerolinecolor: '#334155', 
-                                                color: '#F59E0B'
+                                                gridcolor: '#404040', 
+                                                zerolinecolor: '#404040', 
+                                                color: '#B1B1B1'
                                             },
                                             yaxis: { 
                                                 title: 'Depth TVD (m)', 
                                                 autorange: 'reversed', 
-                                                gridcolor: '#334155', 
-                                                zerolinecolor: '#334155', 
-                                                color: '#94a3b8',
+                                                gridcolor: '#404040', 
+                                                zerolinecolor: '#404040', 
+                                                color: '#A2A2A2',
                                                 spikemode: 'across',
                                                 spikedash: 'solid',
-                                                spikecolor: '#64748b',
+                                                spikecolor: '#737373',
                                                 spikethickness: 1
                                             },
                                             shapes: shapes,
@@ -578,7 +580,7 @@ const CorrelationPanel = ({ isOpen, onClose, activeWell, offsetWell, isFullScree
                                                         {well.casing_strings?.map((cs, cIdx) => (
                                                             <tr key={cIdx} className="hover:bg-slate-800/40 transition">
                                                                 <td className="px-4 py-3 font-semibold text-white">{cs.name}</td>
-                                                                <td className="px-3 py-3 font-mono">{cs.hole_size_in}" / {cs.casing_od_in}"</td>
+                                                                <td className="px-3 py-3 font-mono">{cs.hole_size_in}" / {cs.casing_od_in}" </td>
                                                                 <td className="px-3 py-3 font-mono text-cyan-300">{cs.depth_tvd_m} m</td>
                                                                 <td className="px-3 py-3 font-mono">{cs.weight_ppf}# {cs.grade}</td>
                                                                 <td className="px-3 py-3">{cs.shoe_formation}</td>

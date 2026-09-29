@@ -17,9 +17,9 @@ from backend.main import app as fastapi_app
 
 if has_gradio and gr is not None:
     # Gradio interface that acts as an entry point and provides an interactive API dashboard
-    with gr.Blocks(title="PetrolQ API Gateway") as demo:
-        gr.Markdown("# 🛢️ PetrolQ API Backend")
-        gr.Markdown("FastAPI backend is live and serving endpoints for the PetrolQ application.")
+    with gr.Blocks(title="AGATE API Gateway") as demo:
+        gr.Markdown("# 🛢️ AGATE API Backend")
+        gr.Markdown("FastAPI backend is live and serving endpoints for the AGATE application.")
         gr.Markdown("Interactive API Documentation: [Swagger UI (/docs)](/docs) | [ReDoc (/redoc)](/redoc)")
 
     # Mount FastAPI app so all /api endpoints, websockets, and routes work seamlessly

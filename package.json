@@ -1,8 +1,8 @@
 {
-  "name": "petrolq-nwis",
+  "name": "agate-nwis",
   "version": "1.0.0",
   "private": true,
-  "description": "PetrolQ Nearby Wells Intelligence System",
+  "description": "AGATE Nearby Wells Intelligence System",
   "scripts": {
     "install-all": "npm install && cd frontend && npm install",
     "predev": "cd frontend && npm install",

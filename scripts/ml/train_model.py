@@ -173,8 +173,13 @@ def train():
     metadata_path = os.path.join(artifact_dir, 'model_metadata.json')
     with open(metadata_path, 'w') as f:
         json.dump(metadata, f, indent=4)
-        
-    print(f"\nAll artifacts (model, SHAP, metadata) saved to {artifact_dir}")
+
+    # Keep model_features.joblib in lockstep with model_metadata.json. It was previously
+    # never rewritten here, so it drifted to a stale 15-feature list from an older model
+    # generation while the served model used these 14 features.
+    joblib.dump(available_features, os.path.join(artifact_dir, 'model_features.joblib'))
+
+    print(f"\nAll artifacts (model, SHAP, metadata, features) saved to {artifact_dir}")
 
 if __name__ == "__main__":
     train()

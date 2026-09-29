@@ -19,7 +19,7 @@ def generate_oil_ddr_pdf(output_path: str):
     
     page.insert_text(
         fitz.Point(45, 48), 
-        "PETROLQ ENERGY", 
+        "AGATE ENERGY", 
         fontsize=13, 
         fontname="helv", 
         color=(1, 1, 1)
@@ -175,13 +175,20 @@ def generate_oil_ddr_pdf(output_path: str):
 
     page.insert_text(fitz.Point(410, sig_y), "Approved by:", fontsize=8, fontname="helv", color=(0.4, 0.4, 0.4))
     page.insert_text(fitz.Point(410, sig_y + 14), "Superintendent Drilling (Operations)", fontsize=8, fontname="helv", color=(0, 0, 0))
-    page.insert_text(fitz.Point(410, sig_y + 26), "PetrolQ Energy, Corporate HQ", fontsize=7.5, fontname="helv", color=(0.4, 0.4, 0.4))
+    page.insert_text(fitz.Point(410, sig_y + 26), "AGATE Energy, Corporate HQ", fontsize=7.5, fontname="helv", color=(0.4, 0.4, 0.4))
 
     doc.save(output_path)
     doc.close()
-    print(f"Successfully generated realistic OIL DDR PDF at: {output_path}")
+    print(f"Successfully generated representative sample OIL DDR PDF at: {output_path}")
 
 if __name__ == "__main__":
+    import os
     import sys
-    out = sys.argv[1] if len(sys.argv) > 1 else "e:/sih_2026/sample_reports/OIL_Baghjan_DDR_Well_04.pdf"
+    # Repo-relative, not an absolute path from whatever machine this was first run on.
+    # The filename carries a SAMPLE_ prefix on purpose — see sample_reports/README.md.
+    default_out = os.path.normpath(os.path.join(
+        os.path.dirname(__file__), "..", "..", "sample_reports",
+        "SAMPLE_representative_OIL_Baghjan_DDR_Well_04.pdf",
+    ))
+    out = sys.argv[1] if len(sys.argv) > 1 else default_out
     generate_oil_ddr_pdf(out)

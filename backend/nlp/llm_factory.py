@@ -14,9 +14,12 @@ PROVIDER_OLLAMA = "ollama"
 PROVIDER_OFFLINE = "offline"
 
 # Model Defaults
+# Gemini is addressed via the -latest alias: the previously pinned
+# "gemini-1.5-flash" was retired by Google and now returns 404 NOT_FOUND on
+# generateContent, which silently dropped the app to its offline path.
 DEFAULT_MODELS = {
-    PROVIDER_GEMINI: "gemini-1.5-flash",
-    PROVIDER_CLAUDE: "claude-3-5-haiku-20241022",
+    PROVIDER_GEMINI: "gemini-3.5-flash",
+    PROVIDER_CLAUDE: "claude-haiku-4-5-20251001",
     PROVIDER_OPENAI: "gpt-4o-mini",
     PROVIDER_OLLAMA: "llama3",
 }
@@ -232,6 +235,44 @@ def get_llm(
 
     else:
         raise RuntimeError(f"No active LLM provider configured or available. Running in offline rule-based mode.")
+
+def get_llm_candidates(temperature: float = 0.0, timeout: float = 20.0):
+    """
+    Returns ``[(provider, model, llm), ...]`` in failover order: the
+    auto-detected provider first, then every other available provider.
+
+    Why this exists: with a single provider the app degrades straight to the
+    deterministic answer whenever that one provider hiccups. A transient 503
+    from Gemini (observed 2026-09-29) therefore looked identical to having no
+    API key at all, even while a healthy Claude key was sitting right there.
+    Silent degradation to "offline" is the failure mode that hid this codebase's
+    zero-embedding bug for weeks, so callers should retry down this list rather
+    than treating one failure as "no LLM available".
+
+    Providers that fail to instantiate are skipped, not raised.
+    """
+    providers = get_configured_providers()
+    active, _ = detect_active_provider()
+
+    order = [active] + [p for p in (PROVIDER_GEMINI, PROVIDER_CLAUDE, PROVIDER_OPENAI)
+                        if p != active]
+
+    candidates = []
+    for name in order:
+        if name == PROVIDER_OFFLINE:
+            continue
+        cfg = providers.get(name) or {}
+        if not cfg.get("available"):
+            continue
+        try:
+            llm = get_llm(provider=name, temperature=temperature, timeout=timeout)
+        except Exception as e:
+            logger.warning(f"Skipping provider '{name}' in failover chain: {e}")
+            continue
+        candidates.append((name, cfg.get("model"), llm))
+
+    return candidates
+
 
 def get_llm_status() -> Dict[str, Any]:
     """Generates a comprehensive status report for UI badges and /api/ai/status."""

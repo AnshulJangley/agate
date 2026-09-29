@@ -95,15 +95,29 @@ const DataTransparencyModal = ({ isOpen, onClose }) => {
                   <span className="text-xs font-bold text-slate-200">Upper Assam Shelf (Calibrated Baseline)</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <SourceTag source="volve_relabeled" compact={true} />
-                  <SourceTag source="force2020_relabeled" compact={true} />
+                  <SourceTag source="synthetic_calibrated" compact={true} />
                 </div>
               </div>
               <p className="text-xs text-slate-300 leading-relaxed font-sans">
-                <strong className="text-white">Volve open field dataset</strong> (Equinor, North Sea) and <strong className="text-white">FORCE 2020</strong> ML competition log benchmark, relabeled and adapted to Upper Assam basin lithology. Synthetic sonic-log inputs calibrated with Eaton/Teale formulas for plausible pressure signatures.
+                <strong className="text-white">Generated well, log and event data</strong>, calibrated to Upper
+                Assam (Assam-Arakan) stratigraphy and stress regime. Stress and pressure signatures follow
+                Eaton / Teale / Jorden-Shirley physics.
+              </p>
+              <p className="text-xs text-slate-400 leading-relaxed font-sans">
+                This section previously claimed the data was the <strong className="text-slate-200">Equinor
+                Volve</strong> open dataset and the <strong className="text-slate-200">FORCE 2020</strong> log
+                benchmark, relabelled for Assam. <strong className="text-slate-200">Neither was used.</strong>{' '}
+                <code className="font-mono text-[11px] text-slate-400">data/raw/</code> is empty and the log
+                builder reports "No raw well logs found. Generating synthetic well log data". No public
+                well dataset contributed to this corpus.
+              </p>
+              <p className="text-xs text-slate-400 leading-relaxed font-sans">
+                The exception is the incident record: two real, publicly documented Indian events — the
+                Baghjan-5 blowout (2020) and the Pasarlapudi blowout (1995) — quoted from the NGT Katakey
+                Committee reports, OISD findings and SPE-206602-MS. Those rows carry a Verified badge.
               </p>
               <div className="flex items-center space-x-2 text-[11px] text-slate-400 pt-0.5">
-                <CheckCircle2 size={13} className="text-emerald-400 shrink-0" />
+                <CheckCircle2 size={13} className="text-slate-400 shrink-0" />
                 <span>Horizons mapped: Tipam Sandstone, Barail Kick Horizon, Kopili Shale.</span>
               </div>
             </div>
@@ -118,7 +132,14 @@ const DataTransparencyModal = ({ isOpen, onClose }) => {
                 <SourceTag source="regional_calibrated" compact={true} />
               </div>
               <p className="text-xs text-slate-300 leading-relaxed font-sans">
-                <strong className="text-white font-semibold">Regionally Calibrated Geomechanics:</strong> Authentic Indian formations (Pariwar, Baisakhi, Jodhpur Sandstone, Bilara Carbonates in Rajasthan; Godavari Gumbo, Ravva, Cretaceous in KG Deepwater; Bokabil, Upper/Middle Bhuban, Disang Flysch in Mizoram). Rigorously calibrated with regional geomechanical physics — including basin-specific Eaton pore pressure normal compaction trends, Teale mechanical specific energy (MSE) thresholds, ahead-of-the-bit radar horizons, and Pan-India offset DTW log correlations.
+                <strong className="text-white font-semibold">Regionally calibrated geomechanics:</strong> the
+                formation names are real Indian stratigraphy (Pariwar, Baisakhi, Jodhpur Sandstone, Bilara
+                Carbonates in Rajasthan; Godavari Gumbo, Ravva, Cretaceous in KG Deepwater; Bokabil,
+                Upper/Middle Bhuban, Disang Flysch in Mizoram), and the physics is calibrated per basin —
+                basin-specific Eaton pore pressure normal-compaction trends, Teale mechanical specific energy
+                (MSE) thresholds, ahead-of-the-bit radar horizons, and offset DTW log correlations.
+                <strong className="text-white font-semibold"> The well and log values themselves are generated</strong>,
+                not recorded from these fields.
               </p>
               <div className="text-[10px] font-mono text-emerald-300/80 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
                 Status: Regionally Calibrated Geomechanics • Eaton PP-FG & Teale MSE Physics Rules Active

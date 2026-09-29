@@ -61,7 +61,7 @@ class WellResponse(BaseModel):
     kb_elevation: Optional[float] = None
     total_depth_tvd: Optional[float] = None
     spud_date: Optional[str] = None
-    data_source: Optional[str] = "volve_relabeled"
+    data_source: Optional[str] = "synthetic_calibrated"
     source: Optional[str] = None
     operator: Optional[str] = None
     is_synthetic: Optional[bool] = False
@@ -112,12 +112,24 @@ class HazardMetric(BaseModel):
     trigger_reason: str
     key_indicator: Optional[str] = None
     margin: Optional[float] = None
+    # "physics+ml" when a trained model class backs the score; "physics" when it comes
+    # from drilling mechanics alone. Overpressure and cementing are physics-only —
+    # the model's four trained labels do not include them — and saying so in the
+    # payload is better than letting them look model-backed.
+    basis: Optional[str] = None
 
 class HazardBreakdown(BaseModel):
+    # A schema that lists a fixed set of keys silently DROPS any the service adds:
+    # `HazardBreakdown` knew four hazards, so `overpressure` and `cementing` were
+    # computed, returned by the service, and then stripped here before reaching the
+    # client. The endpoint looked healthy and reported four hazards. When adding a
+    # hazard to ml/service.py, add it here too, or it will vanish the same way.
     gas_kick: HazardMetric
     lost_circulation: HazardMetric
     stuck_pipe: HazardMetric
     torque_drag: HazardMetric
+    overpressure: HazardMetric
+    cementing: HazardMetric
 
 class RiskPredictionResponse(BaseModel):
     risk_probability: float

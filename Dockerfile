@@ -1,4 +1,6 @@
-FROM python:3.11-slim
+# Python >= 3.12 is mandatory: requirements.txt pins numpy==2.5.2 and scipy==1.18.1,
+# both of which declare Requires-Python >=3.12. 3.14 matches the verified local venv (3.14.2).
+FROM python:3.14-slim
 
 WORKDIR /app
 

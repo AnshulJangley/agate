@@ -40,6 +40,16 @@ def test_physics_formulas():
     assert fg > 11.6, f"Fracture gradient {fg} should exceed normal ECD"
     assert margin > 0, f"Margin {margin} ppg should be positive under safe conditions"
 
+# Every hazard /api/predict-risk reports. The composite risk_probability is computed
+# over all of these: the problem statement names mud losses, stuck pipe, overpressure,
+# torque spikes AND cementing as risks to identify, so the headline number must not
+# silently ignore two of them.
+HAZARD_KEYS = (
+    'gas_kick', 'lost_circulation', 'stuck_pipe', 'torque_drag',
+    'overpressure', 'cementing',
+)
+
+
 def test_hazard_disaggregation_and_backward_compatibility():
     """
     Verify multi-hazard disaggregation:
@@ -55,11 +65,14 @@ def test_hazard_disaggregation_and_backward_compatibility():
         'mud_weight': 11.2, 'ecd': 11.6, 'flow_out_pct': 100.0,
         'pit_gain_bbl': 0.0, 'spp_psi': 2800.0
     })
+    assert set(normal_res['hazards']) == set(HAZARD_KEYS), (
+        f"hazard set changed: {sorted(normal_res['hazards'])} - update HAZARD_KEYS"
+    )
     assert normal_res['risk_level'] == 'LOW', f"Normal drilling should be LOW risk, got {normal_res['risk_level']}"
     assert normal_res['hazards']['gas_kick']['probability'] < 0.35
     assert normal_res['hazards']['stuck_pipe']['probability'] < 0.35
-    norm_probs = [normal_res['hazards'][h]['probability'] for h in ['gas_kick', 'lost_circulation', 'stuck_pipe', 'torque_drag']]
-    expected_norm_comp = round(0.70 * max(norm_probs) + 0.30 * (sum(norm_probs) / 4.0), 3)
+    norm_probs = [normal_res['hazards'][h]['probability'] for h in HAZARD_KEYS]
+    expected_norm_comp = round(0.70 * max(norm_probs) + 0.30 * (sum(norm_probs) / len(HAZARD_KEYS)), 3)
     assert normal_res['risk_probability'] == expected_norm_comp, "Normal risk_probability must strictly match composite formula"
 
     # Gas Kick influx
@@ -77,8 +90,8 @@ def test_hazard_disaggregation_and_backward_compatibility():
     
     # Backward compatibility: single risk_probability must be elevated
     assert kick_res['risk_probability'] >= 0.70, f"Backward compatible risk_probability {kick_res['risk_probability']} should be >= 0.70"
-    kick_probs = [kick_res['hazards'][h]['probability'] for h in ['gas_kick', 'lost_circulation', 'stuck_pipe', 'torque_drag']]
-    expected_kick_comp = round(0.70 * max(kick_probs) + 0.30 * (sum(kick_probs) / 4.0), 3)
+    kick_probs = [kick_res['hazards'][h]['probability'] for h in HAZARD_KEYS]
+    expected_kick_comp = round(0.70 * max(kick_probs) + 0.30 * (sum(kick_probs) / len(HAZARD_KEYS)), 3)
     assert kick_res['risk_probability'] == expected_kick_comp, (
         f"risk_probability {kick_res['risk_probability']} does not match composite formula "
         f"0.70*max + 0.30*mean ({expected_kick_comp})"
@@ -92,8 +105,8 @@ def test_hazard_disaggregation_and_backward_compatibility():
     })
     assert stuck_res['hazards']['stuck_pipe']['probability'] >= 0.75, "Stuck pipe probability should be HIGH/CRITICAL"
     assert stuck_res['risk_probability'] >= 0.75, f"Backward compatible risk_probability {stuck_res['risk_probability']} should be >= 0.75"
-    stuck_probs = [stuck_res['hazards'][h]['probability'] for h in ['gas_kick', 'lost_circulation', 'stuck_pipe', 'torque_drag']]
-    expected_stuck_comp = round(0.70 * max(stuck_probs) + 0.30 * (sum(stuck_probs) / 4.0), 3)
+    stuck_probs = [stuck_res['hazards'][h]['probability'] for h in HAZARD_KEYS]
+    expected_stuck_comp = round(0.70 * max(stuck_probs) + 0.30 * (sum(stuck_probs) / len(HAZARD_KEYS)), 3)
     assert stuck_res['risk_probability'] == expected_stuck_comp, (
         f"risk_probability {stuck_res['risk_probability']} does not match composite formula "
         f"0.70*max + 0.30*mean ({expected_stuck_comp})"
@@ -127,7 +140,7 @@ def test_simulator_realistic_scenario_injection():
     assert stuck_state['prediction']['hazards']['stuck_pipe']['probability'] >= 0.70
 
 def test_api_endpoints():
-    """Verify all required API endpoints for PetrolQ decision suite."""
+    """Verify all required API endpoints for AGATE decision suite."""
     # Mock the DB to prevent real connections (e.g. Supabase) from failing the test
     from database import get_db
     mock_db = MagicMock()

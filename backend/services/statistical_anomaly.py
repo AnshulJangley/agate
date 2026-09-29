@@ -58,17 +58,19 @@ class StatisticalAnomalyService:
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super(StatisticalAnomalyService, cls).__new__(cls)
-            cls._instance.history = {
-                "torque": [],
-                "rop": [],
-                "flow_out_pct": []
-            }
         return cls._instance
 
     def __init__(self, baseline_window: int = 15, z_threshold: float = 2.5, cusum_threshold: float = 4.0):
         self.baseline_window = baseline_window
         self.z_threshold = z_threshold
         self.cusum_threshold = cusum_threshold
+        # The rolling history is per-call-sequence state, but this class is a
+        # singleton — so initialising it here (rather than in __new__, which
+        # runs only once) is what guarantees a new caller starts from a clean
+        # baseline. Previously the history survived across callers and one
+        # well's telemetry silently contaminated the next one's Z-score/CUSUM
+        # baseline. Callers that pass custom_history are unaffected.
+        self.history = {"torque": [], "rop": [], "flow_out_pct": []}
 
     def reset(self):
         self.history = {"torque": [], "rop": [], "flow_out_pct": []}

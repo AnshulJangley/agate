@@ -18,13 +18,34 @@ except ImportError:
     except ImportError:
         from statistics_utils import wilson_confidence_interval  # type: ignore
 
+# Formation names are canonicalised at graph-build time as well as at extraction
+# time, so a value that reached the database before that fix (or arrives from any
+# other writer) cannot split a formation across two nodes.
+try:
+    from nlp.extractor import normalize_formation
+except ImportError:  # pragma: no cover - path fallback for package-style imports
+    from extractor import normalize_formation  # type: ignore
+
 
 CANONICAL_HAZARDS = {
     "stuck_pipe": ["stuck", "sticking", "packoff", "pack-off", "drag", "tight hole"],
     "mud_loss": ["loss", "losses", "lost circulation", "mud loss", "seepage"],
+    # Ahead of gas_kick on purpose. "Gas migration through cement" is a zonal-isolation
+    # failure, but `gas_kick` claims it first because "gas" is one of its keywords — and
+    # that is precisely the Baghjan-5 failure mode, which should not be filed as a kick.
+    # Nothing else moves: an event type has to mention cement to reach this entry, and
+    # none of the existing types do.
+    "cementing": [
+        "cement", "cementing", "slurry", "zonal isolation", "gas migration",
+        "top of cement", "squeeze job",
+    ],
     "gas_kick": ["kick", "influx", "gas", "pit gain", "well control", "blowout"],
     "overpressure": ["overpressure", "pore pressure", "kick horizon", "undercompacted"],
-    "torque_spike": ["torque", "stall", "whirl", "stick-slip"]
+    "torque_spike": ["torque", "stall", "whirl", "stick-slip"],
+    "fishing": [
+        "fishing", "fish", "overshot", "washover", "backoff", "lost in hole",
+        "retrieval operation",
+    ],
 }
 
 INTERVENTION_RULES = [
@@ -126,7 +147,7 @@ class KnowledgeGraphService:
                 continue
             field_name = w.get("field_name") if isinstance(w, dict) else getattr(w, "field_name", "")
             td = w.get("total_depth_tvd") if isinstance(w, dict) else getattr(w, "total_depth_tvd", 3000.0)
-            ds = w.get("data_source") if isinstance(w, dict) else getattr(w, "data_source", "volve_relabeled")
+            ds = w.get("data_source") if isinstance(w, dict) else getattr(w, "data_source", "synthetic_calibrated")
             
             node_id = f"Well:{w_id}"
             self.graph.add_node(
@@ -160,9 +181,16 @@ class KnowledgeGraphService:
             for ev in sorted_events:
                 eid = ev.get("id") if isinstance(ev, dict) else getattr(ev, "id", None)
                 ev_id = f"Event:{eid}"
-                form_val = ev.get("formation") if isinstance(ev, dict) else getattr(ev, "formation", "Barail Formation")
-                formation_name = form_val or "Barail Formation"
-                form_node = f"Formation:{formation_name}"
+                # An absent formation must stay absent. The previous default was the
+                # literal string "Barail Formation", so every event that recorded no
+                # formation was not merely mislabelled — the graph *asserted* Barail for
+                # it. The Pasarlapudi blowout, whose public source names no formation,
+                # was being attributed to Barail on nothing but this default. It also
+                # split one formation across two nodes whenever a report wrote
+                # "Barail Formation" and another wrote "Barail".
+                form_val = ev.get("formation") if isinstance(ev, dict) else getattr(ev, "formation", None)
+                formation_name = normalize_formation(form_val)
+                form_node = f"Formation:{formation_name}" if formation_name else None
                 
                 etype = ev.get("event_type") if isinstance(ev, dict) else getattr(ev, "event_type", "")
                 hazard_type = classify_hazard(etype)
@@ -193,15 +221,19 @@ class KnowledgeGraphService:
                 )
 
                 # 2. Formation Node & Edge: Well DRILLED_THROUGH Formation
-                if not self.graph.has_node(form_node):
-                    self.graph.add_node(form_node, type="Formation", name=formation_name)
-                self.graph.add_edge(well_node, form_node, relationship="DRILLED_THROUGH")
+                #    Skipped when the event recorded no formation, so no synthetic
+                #    Formation node and no OCCURRED_IN edge are invented for it.
+                if form_node is not None:
+                    if not self.graph.has_node(form_node):
+                        self.graph.add_node(form_node, type="Formation", name=formation_name)
+                    self.graph.add_edge(well_node, form_node, relationship="DRILLED_THROUGH")
 
                 # 3. Edge: Well HAD_EVENT Event
                 self.graph.add_edge(well_node, ev_id, relationship="HAD_EVENT")
 
                 # 4. Edge: Event OCCURRED_IN Formation
-                self.graph.add_edge(ev_id, form_node, relationship="OCCURRED_IN")
+                if form_node is not None:
+                    self.graph.add_edge(ev_id, form_node, relationship="OCCURRED_IN")
 
                 # 5. Edge: Event HAS_HAZARD Hazard
                 if not self.graph.has_node(hazard_node):
@@ -255,7 +287,7 @@ class KnowledgeGraphService:
         for ev in seed_events:
             ev_id = f"Event:{ev['id']}"
             well_node = f"Well:{ev['well_id']}"
-            form_node = f"Formation:{ev['form']}"
+            form_node = f"Formation:{normalize_formation(ev['form'])}"
             h_type = classify_hazard(ev['type'])
             h_node = f"Hazard:{h_type}"
             interv = extract_intervention(ev['mit'])

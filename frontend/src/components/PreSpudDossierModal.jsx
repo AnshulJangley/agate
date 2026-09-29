@@ -56,7 +56,7 @@ const PreSpudDossierModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1', 
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && isOpen) {
-        if (typeof window !== 'undefined' && window.location.search.includes('module=')) {
+        if (typeof window !== 'undefined' && window.location.search.includes(' module=')) {
           window.close();
         }
         onClose();
@@ -73,7 +73,7 @@ const PreSpudDossierModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1', 
       const res = await axios.get(`${API_BASE}/api/wells/${activeWellId}/pre-spud-dossier`, { timeout: 3000 });
       setDossier(res.data);
     } catch (err) {
-      console.warn('API Pre-Spud Dossier unreachable, generating local Rig Edge Dossier:', err);
+      console.warn('API Pre-Spud Dossier unreachable, generating local Rig Edge Dossier: ', err);
       const offlineDossier = generateOfflineDossier(activeWellId);
       setDossier(offlineDossier);
     } finally {
@@ -164,7 +164,7 @@ const PreSpudDossierModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1', 
 
             <button 
               onClick={() => {
-                if (typeof window !== 'undefined' && window.location.search.includes('module=')) {
+                if (typeof window !== 'undefined' && window.location.search.includes(' module=')) {
                   window.close();
                 }
                 onClose();
@@ -185,13 +185,13 @@ const PreSpudDossierModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1', 
             <div className="flex justify-between items-start">
               <div>
                 <span className="text-xs font-mono font-bold tracking-widest text-cyan-400 uppercase block print:text-slate-600">
-                  PETROLQ PLATFORM
+                  AGATE PLATFORM
                 </span>
                 <h1 className="text-2xl font-black text-white mt-1 print:text-black tracking-tight">
                   PRE-SPUD OFFSET WELL HAZARD & DRILLING INTELLIGENCE DOSSIER
                 </h1>
                 <p className="text-xs text-slate-400 print:text-slate-600 mt-1">
-                  Document ID: <strong className="font-mono text-slate-200 print:text-black">{meta.document_id || 'PETROLQ-DOSSIER-2026'}</strong> • Classification: RESTRICTED
+                  Document ID: <strong className="font-mono text-slate-200 print:text-black">{meta.document_id || 'AGATE-DOSSIER-2026'}</strong> • Classification: RESTRICTED
                 </p>
               </div>
 
@@ -421,7 +421,7 @@ const PreSpudDossierModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1', 
           <div className="pt-6 border-t-2 border-slate-700 print:border-black grid grid-cols-3 gap-6 text-xs text-slate-400 print:text-slate-600">
             <div>
               <span className="block mb-6">Prepared By:</span>
-              <div className="border-b border-slate-600 pb-1 font-mono text-slate-300 print:text-black">PetrolQ Autonomous AI</div>
+              <div className="border-b border-slate-600 pb-1 font-mono text-slate-300 print:text-black">AGATE Autonomous AI</div>
               <span className="text-[10px]">Lead Drilling Engineer (Operations)</span>
             </div>
             <div>
@@ -440,7 +440,7 @@ const PreSpudDossierModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1', 
 
         {/* Footer - Screen only */}
         <div className="px-6 py-3 bg-slate-950 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400 print:hidden">
-          <span>Official PetrolQ Decision Support Document.</span>
+          <span>Official AGATE Decision Support Document.</span>
           <button
             onClick={onClose}
             className="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium transition"

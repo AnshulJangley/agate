@@ -1,3 +1,4 @@
+import { MONO_COLORWAY } from '../lib/mono';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_BASE } from '../lib/api';
@@ -54,7 +55,7 @@ const PPFGWindowModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1', isFu
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && isOpen) {
-        if (typeof window !== 'undefined' && window.location.search.includes('module=')) {
+        if (typeof window !== 'undefined' && window.location.search.includes(' module=')) {
           window.close();
         }
         onClose();
@@ -71,7 +72,7 @@ const PPFGWindowModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1', isFu
       const res = await axios.get(`${API_BASE}/api/wells/${activeWellId}/ppfg`, { timeout: 3000 });
       setData(res.data);
     } catch (err) {
-      console.warn('Network/Cloud API unavailable for PPFG, using local Rig Edge Eaton PPFG engine:', err);
+      console.warn('Network/Cloud API unavailable for PPFG, using local Rig Edge Eaton PPFG engine: ', err);
       const offlinePPFG = evaluateOfflinePPFG(activeWellId);
       setData(offlinePPFG);
     } finally {
@@ -114,9 +115,9 @@ const PPFGWindowModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1', isFu
         name: 'Estimated uncertainty range',
         x: uncPolyX,
         y: uncPolyY,
-        line: { color: 'rgba(56, 189, 248, 0.35)', width: 1, dash: 'dot' },
+        line: { color: 'rgba(177, 177, 177, 0.35)', width: 1, dash: 'dot' },
         fill: 'toself',
-        fillcolor: 'rgba(56, 189, 248, 0.16)',
+        fillcolor: 'rgba(177, 177, 177, 0.16)',
         hoverinfo: 'name'
       });
     }
@@ -128,7 +129,7 @@ const PPFGWindowModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1', isFu
       name: `Pore Pressure (${unitLabel})`,
       x: ppCurve,
       y: data.depths_tvd,
-      line: { color: '#38BDF8', width: 2.5, dash: 'dash' },
+      line: { color: '#B1B1B1', width: 2.5, dash: 'dash' },
       hoverinfo: 'x+y+name'
     });
 
@@ -139,7 +140,7 @@ const PPFGWindowModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1', isFu
       name: `Fracture Gradient (${unitLabel})`,
       x: fgCurve,
       y: data.depths_tvd,
-      line: { color: '#F97316', width: 2.5 },
+      line: { color: '#9A9A9A', width: 2.5 },
       hoverinfo: 'x+y+name'
     });
 
@@ -151,7 +152,7 @@ const PPFGWindowModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1', isFu
       type: 'scatter',
       mode: 'none',
       fill: 'toself',
-      fillcolor: 'rgba(16, 185, 129, 0.12)',
+      fillcolor: 'rgba(163, 163, 163, 0.12)',
       name: 'Safe Mud Window Envelope',
       x: polyX,
       y: polyY,
@@ -186,7 +187,7 @@ const PPFGWindowModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1', isFu
         x: [currentEcd],
         y: [act.current_tvd],
         marker: { 
-          color: act.status_color || '#10B981', 
+          color: act.status_color || '#A3A3A3', 
           size: 14, 
           symbol: 'diamond',
           line: { color: '#FFFFFF', width: 2 } 
@@ -273,7 +274,7 @@ const PPFGWindowModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1', isFu
 
             <button 
               onClick={() => {
-                if (typeof window !== 'undefined' && window.location.search.includes('module=')) {
+                if (typeof window !== 'undefined' && window.location.search.includes(' module=')) {
                   window.close();
                 }
                 onClose();
@@ -290,12 +291,12 @@ const PPFGWindowModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1', isFu
         <div 
           className="px-3 sm:px-6 py-2 sm:py-3 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs transition"
           style={{
-            backgroundColor: `${act.status_color || '#10B981'}15`,
-            borderColor: `${act.status_color || '#10B981'}40`
+            backgroundColor: `${act.status_color || '#A3A3A3'}15`,
+            borderColor: `${act.status_color || '#A3A3A3'}40`
           }}
         >
           <div className="flex items-center space-x-2">
-            <ShieldCheck size={18} style={{ color: act.status_color || '#10B981' }} className="shrink-0" />
+            <ShieldCheck size={18} style={{ color: act.status_color || '#A3A3A3' }} className="shrink-0" />
             <span className="font-bold text-white text-xs sm:text-sm">
               {act.status_message || 'Operating safely inside drilling envelope.'}
             </span>
@@ -331,31 +332,32 @@ const PPFGWindowModal = ({ isOpen, onClose, activeWellId = 'OIL-BAGHJAN-1', isFu
               <Plot
                 data={plotTraces}
                 layout={{
+                    colorway: MONO_COLORWAY,
                   autosize: true,
                   margin: { l: 60, r: 40, b: 50, t: 30 },
                   paper_bgcolor: 'transparent',
-                  plot_bgcolor: '#0B0F19',
+                  plot_bgcolor: '#0F0F0F',
                   xaxis: {
                     title: `Mud Weight / Pressure Gradient (${unitLabel})`,
                     range: isPpg ? [8.0, 17.5] : [0.95, 2.1],
-                    gridcolor: '#1E293B',
-                    zerolinecolor: '#334155',
-                    color: '#94A3B8'
+                    gridcolor: '#292929',
+                    zerolinecolor: '#404040',
+                    color: '#A2A2A2'
                   },
                   yaxis: {
                     title: 'True Vertical Depth TVD (m)',
                     autorange: 'reversed',
-                    gridcolor: '#1E293B',
-                    zerolinecolor: '#334155',
-                    color: '#94A3B8'
+                    gridcolor: '#292929',
+                    zerolinecolor: '#404040',
+                    color: '#A2A2A2'
                   },
                   legend: {
                     x: 0.02,
                     y: 0.04,
-                    bgcolor: 'rgba(15, 23, 42, 0.85)',
-                    bordercolor: '#334155',
+                    bgcolor: 'rgba(23, 23, 23, 0.85)',
+                    bordercolor: '#404040',
                     borderwidth: 1,
-                    font: { color: '#E2E8F0', size: 10 }
+                    font: { color: '#E7E7E7', size: 10 }
                   }
                 }}
                 useResizeHandler={true}

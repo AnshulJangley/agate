@@ -13,7 +13,7 @@ load_dotenv(os.path.join(backend_dir, "..", ".env"))
 
 from database import SessionLocal
 from models import WellMaster, SyntheticEvent, WellLog
-from nlp.config import get_embedding
+from nlp.config import get_embedding, _pseudo_embedding
 
 def seed_regional_data():
     db = SessionLocal()
@@ -183,7 +183,7 @@ def seed_regional_data():
                     try:
                         emb = get_embedding(text_for_embed)
                     except Exception:
-                        emb = [0.0] * 384
+                        emb = _pseudo_embedding(text_for_embed)
 
                     ev = SyntheticEvent(
                         well_id=w.well_id,

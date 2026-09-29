@@ -16,10 +16,10 @@ if __name__ == "__main__":
     except ValueError:
         port = 10000
 
-    print(f"[PetrolQ] Starting server on 0.0.0.0:{port}...", flush=True)
+    print(f"[AGATE] Starting server on 0.0.0.0:{port}...", flush=True)
 
     # Import app after paths are configured
     from backend.main import app
-    print("[PetrolQ] FastAPI app imported successfully, starting Uvicorn...", flush=True)
+    print("[AGATE] FastAPI app imported successfully, starting Uvicorn...", flush=True)
 
     uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")

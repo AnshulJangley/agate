@@ -57,3 +57,9 @@ Thumbs.db
 /explain.md
 /architecture.md
 !docs/ARCHITECTURE.md
+
+# Local data-recovery snapshots taken before the reseed (§5.10) and the well-log
+# restore (§5.14). Kept on disk as a safety net; not project files, so they are not
+# published and a stray `git add -A` cannot pick them up.
+synthetic_event_backup_pre_reseed.json
+well_log_backup_pre_ingest.json

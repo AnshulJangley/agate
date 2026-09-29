@@ -338,7 +338,11 @@ def get_analog_wells(
         # 2. Hazard profile affinity
         haz_score = 0.5
         for key, aff_dict in hazard_affinity.items():
-            if key in h_type or h_type in key:
+            # An absent hazard_type must stay neutral. "" is a substring of every
+            # key, so without the `h_type and` guard the `h_type in key` test fired
+            # for the first table (stuck_pipe) and silently reordered the analog
+            # pool as though a stuck-pipe hazard had been requested.
+            if h_type and (key in h_type or h_type in key):
                 if cand in aff_dict:
                     haz_score = aff_dict[cand]
                     break

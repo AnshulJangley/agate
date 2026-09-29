@@ -333,9 +333,9 @@ def get_pre_spud_dossier(
         "report_metadata": {
             "title": "PRE-SPUD OFFSET WELL HAZARD & ENGINEERING DOSSIER",
             "basin": region.capitalize(),
-            "institution": "PETROLQ",
+            "institution": "AGATE",
             "generated_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC"),
-            "document_id": f"PETROLQ-DOSSIER-{well_id}",
+            "document_id": f"AGATE-DOSSIER-{well_id}",
             "confidentiality": "RESTRICTED / OPERATIONAL"
         },
         "target_well": {

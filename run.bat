@@ -1,6 +1,6 @@
 @echo off
 echo ===================================================
-echo   Setting up PetrolQ Backend and Frontend
+echo   Setting up AGATE Backend and Frontend
 echo ===================================================
 
 echo.

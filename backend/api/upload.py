@@ -10,7 +10,7 @@ import pandas as pd
 from database import get_db
 from sqlalchemy.orm import Session
 from models import SyntheticEvent, WellLog, WellMaster
-from nlp.config import get_embedding
+from nlp.config import get_embedding, EMBEDDING_DIM
 
 router = APIRouter()
 
@@ -59,13 +59,31 @@ async def upload_report(
             # Ingest PDF report with OCR fallback
             from nlp.ingest import ingest_report
             result = ingest_report(temp_file_path, well_id, db)
+
+            ingestion_status = result.get("status", "success")
+            extracted = result.get("extracted_count", 0)
+
+            # A byte-identical re-upload resolves to the existing document and
+            # extracts nothing. Reporting that as a fresh success would be a lie
+            # of the same kind that let 42 duplicate rows accumulate unnoticed.
+            if ingestion_status == "duplicate":
+                message = result.get("message") or f"{file.filename} was already ingested; not re-processed."
+            elif ingestion_status == "error":
+                message = result.get("message") or f"{file.filename} produced no readable text."
+            else:
+                message = f"Successfully parsed {file.filename} with {extracted} incidents extracted."
+
             return {
-                "status": "success",
+                "status": ingestion_status,
                 "file_type": "pdf",
                 "filename": file.filename,
+                "document_id": result.get("document_id"),
+                "sha256": result.get("sha256"),
                 "ocr_triggered": result.get("ocr_triggered", False),
-                "extracted_count": result.get("extracted_count", 0),
-                "message": f"Successfully parsed {file.filename} with {result.get('extracted_count', 0)} incidents extracted.",
+                "extracted_count": extracted,
+                "chunk_count": result.get("chunk_count", 0),
+                "graph_link": result.get("graph_link", {}),
+                "message": message,
                 "events": result.get("events", []),
                 "guardrail_verified": result.get("guardrail_verified", True),
                 "guardrail_violations": result.get("guardrail_violations", [])
@@ -169,8 +187,8 @@ def contribute_lesson_learned(
     """
     Institutional Memory Two-Way Feedback Loop (SIH 2026 Core Mandate):
     Allows field engineers and operations reviewers to log lessons learned and mitigations
-    from active drilling. Uses the exact same BGE-small embedding model (384 dims) as RAG search
-    so the new record is immediately retrievable within the same session.
+    from active drilling. Uses the exact same embedding provider and dimension as the
+    RAG search path so the new record is immediately retrievable within the same session.
     """
     # 1. Verify well exists (with fallback to defaultWells.json if DB is offline)
     well_found = False
@@ -201,15 +219,15 @@ def contribute_lesson_learned(
         f"Mitigation: {payload.mitigation_applied}."
     )
 
-    # 3. Generate embedding using the exact same model (bge-small-en-v1.5 or offline fallback)
+    # 3. Generate embedding with the same provider/dimension the search path uses
     try:
         embedding = get_embedding(context_str)
-        if len(embedding) != 384:
+        if len(embedding) != EMBEDDING_DIM:
             from nlp.config import _pseudo_embedding
-            embedding = _pseudo_embedding(context_str)
-    except Exception as e:
+            embedding = _pseudo_embedding(context_str, EMBEDDING_DIM)
+    except Exception:
         from nlp.config import _pseudo_embedding
-        embedding = _pseudo_embedding(context_str)
+        embedding = _pseudo_embedding(context_str, EMBEDDING_DIM)
 
     # Determine appropriate region-based provenance tag
     from simulator import get_well_region_tag
@@ -286,3 +304,96 @@ def contribute_lesson_learned(
         "embedding_dimensions": len(embedding),
         "is_immediately_searchable": True
     }
+
+
+# ==============================================================================
+# Phase 4: document library
+# ==============================================================================
+
+@router.get("/api/documents")
+def list_documents(
+    well_id: Optional[str] = None,
+    limit: int = 50,
+    db: Session = Depends(get_db),
+):
+    """
+    Ingested document library, newest first, with chunk counts.
+
+    Reads Postgres and reports data_source, so the UI can tell a real listing
+    from this codebase's silent JSON fallbacks.
+    """
+    from models import Document
+
+    try:
+        query = db.query(Document)
+        if well_id:
+            query = query.filter(Document.well_id == well_id)
+        docs = query.order_by(Document.id.desc()).limit(max(1, min(limit, 200))).all()
+
+        return {
+            "data_source": "postgres",
+            "count": len(docs),
+            "documents": [
+                {
+                    "id": d.id,
+                    "well_id": d.well_id,
+                    "filename": d.filename,
+                    "doc_type": d.doc_type,
+                    "sha256": d.sha256,
+                    "ocr_triggered": bool(d.ocr_triggered),
+                    "char_count": d.char_count,
+                    "chunk_count": d.chunk_count,
+                    "status": d.status,
+                    "created_at": d.created_at.isoformat() if d.created_at else None,
+                }
+                for d in docs
+            ],
+        }
+    except Exception as e:
+        return {
+            "data_source": "unavailable",
+            "count": 0,
+            "documents": [],
+            "error": str(e),
+        }
+
+
+@router.get("/api/documents/{document_id}/chunks")
+def get_document_chunks(
+    document_id: int,
+    limit: int = 50,
+    db: Session = Depends(get_db),
+):
+    """Chunk texts for one document. Embeddings are omitted - they are not useful to the UI."""
+    from models import DocumentChunk
+
+    try:
+        rows = (
+            db.query(DocumentChunk)
+            .filter(DocumentChunk.document_id == document_id)
+            .order_by(DocumentChunk.chunk_index.asc())
+            .limit(max(1, min(limit, 500)))
+            .all()
+        )
+        return {
+            "data_source": "postgres",
+            "document_id": document_id,
+            "count": len(rows),
+            "chunks": [
+                {
+                    "chunk_index": c.chunk_index,
+                    "text": c.text,
+                    "embedded": bool(c.embedding),
+                    "char_count": len(c.text or ""),
+                }
+                for c in rows
+            ],
+        }
+    except Exception as e:
+        return {
+            "data_source": "unavailable",
+            "document_id": document_id,
+            "count": 0,
+            "chunks": [],
+            "error": str(e),
+        }

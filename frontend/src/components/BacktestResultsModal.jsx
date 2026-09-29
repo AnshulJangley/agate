@@ -1,3 +1,4 @@
+import { MONO_COLORWAY } from '../lib/mono';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Plot from 'react-plotly.js';
@@ -154,7 +155,7 @@ export default function BacktestResultsModal({ isOpen, onClose, isFullScreen: pr
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && isOpen) {
-        if (typeof window !== 'undefined' && window.location.search.includes('module=')) {
+        if (typeof window !== 'undefined' && window.location.search.includes(' module=')) {
           window.close();
         }
         onClose();
@@ -177,7 +178,7 @@ export default function BacktestResultsModal({ isOpen, onClose, isFullScreen: pr
         setAvailableCases(res.data.available_cases);
       }
     } catch (err) {
-      console.error("Multi-incident backtest failed:", err);
+      console.error("Multi-incident backtest failed: ", err);
       setError("Failed to run time-travel backtest. Please check backend server.");
     } finally {
       setLoading(false);
@@ -228,11 +229,11 @@ export default function BacktestResultsModal({ isOpen, onClose, isFullScreen: pr
       type: 'scatter',
       mode: 'lines+markers',
       name: 'Composite Risk Probability',
-      line: { color: '#06B6D4', width: 3, shape: 'spline' },
-      marker: { color: '#06B6D4', size: 6 },
+      line: { color: '#A6A6A6', width: 3, shape: 'spline' },
+      marker: { color: '#A6A6A6', size: 6 },
       fill: 'tozeroy',
-      fillcolor: 'rgba(6, 182, 212, 0.12)',
-      hovertemplate: '<b>Depth:</b> %{x} m<br><b>Risk Prob:</b> %{y:.3f}<extra></extra>'
+      fillcolor: 'rgba(166, 166, 166, 0.12)',
+      hovertemplate: ' <b>Depth:</b> %{x} m<br><b>Risk Prob:</b> %{y:.3f}<extra></extra>'
     },
     {
       x: depths,
@@ -240,8 +241,8 @@ export default function BacktestResultsModal({ isOpen, onClose, isFullScreen: pr
       type: 'scatter',
       mode: 'lines',
       name: 'DTW Sequence Similarity',
-      line: { color: '#A855F7', width: 2, dash: 'dot' },
-      hovertemplate: '<b>Depth:</b> %{x} m<br><b>DTW Match:</b> %{y:.1%}<extra></extra>'
+      line: { color: '#808080', width: 2, dash: 'dot' },
+      hovertemplate: ' <b>Depth:</b> %{x} m<br><b>DTW Match:</b> %{y:.1%}<extra></extra>'
     }
   ];
 
@@ -253,7 +254,7 @@ export default function BacktestResultsModal({ isOpen, onClose, isFullScreen: pr
       x1: incidentDepth,
       y0: 0.40,
       y1: 0.40,
-      line: { color: '#F59E0B', width: 1.5, dash: 'dash' }
+      line: { color: '#B1B1B1', width: 1.5, dash: 'dash' }
     },
     {
       type: 'line',
@@ -261,7 +262,7 @@ export default function BacktestResultsModal({ isOpen, onClose, isFullScreen: pr
       x1: incidentDepth,
       y0: 0.70,
       y1: 0.70,
-      line: { color: '#EF4444', width: 1.5, dash: 'dash' }
+      line: { color: '#848484', width: 1.5, dash: 'dash' }
     },
     {
       type: 'line',
@@ -269,7 +270,7 @@ export default function BacktestResultsModal({ isOpen, onClose, isFullScreen: pr
       x1: incidentDepth,
       y0: 0,
       y1: 1.0,
-      line: { color: '#EF4444', width: 2.5, dash: 'dashdot' }
+      line: { color: '#848484', width: 2.5, dash: 'dashdot' }
     }
   ];
 
@@ -279,9 +280,9 @@ export default function BacktestResultsModal({ isOpen, onClose, isFullScreen: pr
       y: 1.02,
       text: `EVENT ONSET (${incidentDepth}m)`,
       showarrow: false,
-      font: { color: '#EF4444', size: 10, family: 'Inter, sans-serif' },
-      bgcolor: 'rgba(239, 68, 68, 0.15)',
-      bordercolor: '#EF4444',
+      font: { color: '#848484', size: 10, family: 'Inter, sans-serif' },
+      bgcolor: 'rgba(132, 132, 132, 0.15)',
+      bordercolor: '#848484',
       borderwidth: 1,
       borderpad: 4
     }
@@ -295,16 +296,16 @@ export default function BacktestResultsModal({ isOpen, onClose, isFullScreen: pr
       x1: precDepth,
       y0: 0,
       y1: 0.85,
-      line: { color: '#EAB308', width: 1.5, dash: 'dot' }
+      line: { color: '#BBBBBB', width: 1.5, dash: 'dot' }
     });
     annotations.push({
       x: precDepth,
       y: 0.88,
       text: `Precursor (${precDepth}m)`,
       showarrow: false,
-      font: { color: '#EAB308', size: 9, family: 'Inter, sans-serif' },
-      bgcolor: 'rgba(234, 179, 8, 0.15)',
-      bordercolor: '#EAB308',
+      font: { color: '#BBBBBB', size: 9, family: 'Inter, sans-serif' },
+      bgcolor: 'rgba(187, 187, 187, 0.15)',
+      bordercolor: '#BBBBBB',
       borderwidth: 1,
       borderpad: 3
     });
@@ -318,16 +319,16 @@ export default function BacktestResultsModal({ isOpen, onClose, isFullScreen: pr
       x1: seqDepth,
       y0: 0,
       y1: 0.72,
-      line: { color: '#A855F7', width: 1.5, dash: 'dot' }
+      line: { color: '#808080', width: 1.5, dash: 'dot' }
     });
     annotations.push({
       x: seqDepth,
       y: 0.75,
       text: `DTW Match (${seqDepth}m)`,
       showarrow: false,
-      font: { color: '#A855F7', size: 9, family: 'Inter, sans-serif' },
-      bgcolor: 'rgba(168, 85, 247, 0.15)',
-      bordercolor: '#A855F7',
+      font: { color: '#808080', size: 9, family: 'Inter, sans-serif' },
+      bgcolor: 'rgba(128, 128, 128, 0.15)',
+      bordercolor: '#808080',
       borderwidth: 1,
       borderpad: 3
     });
@@ -341,16 +342,16 @@ export default function BacktestResultsModal({ isOpen, onClose, isFullScreen: pr
       x1: elevDepth,
       y0: 0,
       y1: 0.60,
-      line: { color: '#F59E0B', width: 2, dash: 'dash' }
+      line: { color: '#B1B1B1', width: 2, dash: 'dash' }
     });
     annotations.push({
       x: elevDepth,
       y: 0.63,
       text: `Elevated Alert (${elevDepth}m)`,
       showarrow: false,
-      font: { color: '#F59E0B', size: 9, family: 'Inter, sans-serif' },
-      bgcolor: 'rgba(245, 158, 11, 0.15)',
-      bordercolor: '#F59E0B',
+      font: { color: '#B1B1B1', size: 9, family: 'Inter, sans-serif' },
+      bgcolor: 'rgba(177, 177, 177, 0.15)',
+      bordercolor: '#B1B1B1',
       borderwidth: 1,
       borderpad: 3
     });
@@ -364,35 +365,36 @@ export default function BacktestResultsModal({ isOpen, onClose, isFullScreen: pr
       x1: critDepth,
       y0: 0,
       y1: 0.95,
-      line: { color: '#EF4444', width: 2, dash: 'solid' }
+      line: { color: '#848484', width: 2, dash: 'solid' }
     });
     annotations.push({
       x: critDepth,
       y: 0.98,
       text: `Critical Alert (${critDepth}m)`,
       showarrow: false,
-      font: { color: '#EF4444', size: 9, family: 'Inter, sans-serif' },
-      bgcolor: 'rgba(239, 68, 68, 0.2)',
-      bordercolor: '#EF4444',
+      font: { color: '#848484', size: 9, family: 'Inter, sans-serif' },
+      bgcolor: 'rgba(132, 132, 132, 0.2)',
+      bordercolor: '#848484',
       borderwidth: 1,
       borderpad: 3
     });
   }
 
   const plotLayout = {
+    colorway: MONO_COLORWAY,
     autosize: true,
     height: 280,
     margin: { l: 48, r: 24, t: 36, b: 40 },
     paper_bgcolor: 'transparent',
-    plot_bgcolor: '#0c1322',
-    font: { color: '#94A3B8', family: 'Inter, sans-serif', size: 11 },
+    plot_bgcolor: '#131313',
+    font: { color: '#A2A2A2', family: 'Inter, sans-serif', size: 11 },
     xaxis: {
-      title: { text: 'Drilling Depth TVD (meters)', font: { size: 11, color: '#94A3B8' } },
+      title: { text: 'Drilling Depth TVD (meters)', font: { size: 11, color: '#A2A2A2' } },
       gridcolor: 'rgba(255, 255, 255, 0.05)',
       zeroline: false
     },
     yaxis: {
-      title: { text: 'Hazard Probability / Match %', font: { size: 11, color: '#94A3B8' } },
+      title: { text: 'Hazard Probability / Match %', font: { size: 11, color: '#A2A2A2' } },
       range: [0, 1.08],
       gridcolor: 'rgba(255, 255, 255, 0.05)',
       zeroline: false
@@ -401,7 +403,7 @@ export default function BacktestResultsModal({ isOpen, onClose, isFullScreen: pr
       orientation: 'h',
       x: 0,
       y: 1.18,
-      font: { size: 10, color: '#CBD5E1' }
+      font: { size: 10, color: '#D4D4D4' }
     },
     shapes: shapes,
     annotations: annotations
@@ -411,7 +413,7 @@ export default function BacktestResultsModal({ isOpen, onClose, isFullScreen: pr
 
   return (
     <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md animate-in fade-in duration-200 ${isFullScreen ? 'p-0 w-screen h-screen' : 'p-3 sm:p-5'}`}>
-      <div className={`relative flex flex-col bg-[#070b14]/98 border border-slate-750 shadow-2xl overflow-hidden ${isFullScreen ? 'w-screen h-screen rounded-none border-none max-h-none h-full' : 'w-full max-w-5xl max-h-[92vh] rounded-2xl'}`}>
+      <div className={`relative flex flex-col bg-[#0B0B0B]/98 border border-slate-750 shadow-2xl overflow-hidden ${isFullScreen ? 'w-screen h-screen rounded-none border-none max-h-none h-full' : 'w-full max-w-5xl max-h-[92vh] rounded-2xl'}`}>
         
         {/* Header with Mode Toggles */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-800/80 bg-slate-900/60">
@@ -481,7 +483,7 @@ export default function BacktestResultsModal({ isOpen, onClose, isFullScreen: pr
 
             <button 
               onClick={() => {
-                if (typeof window !== 'undefined' && window.location.search.includes('module=')) {
+                if (typeof window !== 'undefined' && window.location.search.includes(' module=')) {
                   window.close();
                 }
                 onClose();

@@ -82,16 +82,16 @@ def get_ppfg_safe_window(
                 fg_raw[i] = max(pp_raw[i] + 0.5, fg_raw[i] - vug_penalty)
 
         formations = [
-            {"name": "Pariwar Formation", "top_tvd": 0.0, "bottom_tvd": 1200.0, "color": "#FCD34D"},
-            {"name": "Baisakhi Formation", "top_tvd": 1200.0, "bottom_tvd": 1800.0, "color": "#9CA3AF"},
-            {"name": "Jodhpur Sandstone", "top_tvd": 1800.0, "bottom_tvd": 2300.0, "color": "#D97706"},
-            {"name": "Bilara Carbonates", "top_tvd": 2300.0, "bottom_tvd": tvd_max, "color": "#94A3B8"}
+            {"name": "Pariwar Formation", "top_tvd": 0.0, "bottom_tvd": 1200.0, "color": "#D7D7D7"},
+            {"name": "Baisakhi Formation", "top_tvd": 1200.0, "bottom_tvd": 1800.0, "color": "#A2A2A2"},
+            {"name": "Jodhpur Sandstone", "top_tvd": 1800.0, "bottom_tvd": 2300.0, "color": "#909090"},
+            {"name": "Bilara Carbonates", "top_tvd": 2300.0, "bottom_tvd": tvd_max, "color": "#A2A2A2"}
         ]
         casing_shoes = [
-            {"casing_type": 'Conductor 24"', "tvd_depth": 50.0, "color": "#94A3B8", "notes": "Desert dune sand stabilization"},
-            {"casing_type": 'Surface Casing 16"', "tvd_depth": 550.0, "color": "#38BDF8", "notes": "Isolates surface gravels & brackish aquifer"},
-            {"casing_type": 'Intermediate Casing 10-3/4"', "tvd_depth": 1750.0, "color": "#F59E0B", "notes": "Covers abrasive Baisakhi before Jodhpur heavy oil"},
-            {"casing_type": 'Production Casing 7-5/8"', "tvd_depth": min(2750.0, tvd_max - 100.0), "color": "#10B981", "notes": "Set above Bilara cavernous loss zone"}
+            {"casing_type": 'Conductor 24"', "tvd_depth": 50.0, "color": "#A2A2A2", "notes": "Desert dune sand stabilization"},
+            {"casing_type": 'Surface Casing 16"', "tvd_depth": 550.0, "color": "#B1B1B1", "notes": "Isolates surface gravels & brackish aquifer"},
+            {"casing_type": 'Intermediate Casing 10-3/4"', "tvd_depth": 1750.0, "color": "#B1B1B1", "notes": "Covers abrasive Baisakhi before Jodhpur heavy oil"},
+            {"casing_type": 'Production Casing 7-5/8"', "tvd_depth": min(2750.0, tvd_max - 100.0), "color": "#A3A3A3", "notes": "Set above Bilara cavernous loss zone"}
         ]
         notes_str = "Illustrative / Not Yet Calibrated: Regional Eaton model for Rajasthan Basin reflecting heavy oil sand pressures and Bilara cavernous fracture degradation."
 
@@ -129,17 +129,17 @@ def get_ppfg_safe_window(
         fg_raw = pp_raw + stress_ratio * (sigma_v - pp_raw)
 
         formations = [
-            {"name": "Shallow Marine Sediments", "top_tvd": 0.0, "bottom_tvd": 800.0, "color": "#38BDF8"},
-            {"name": "Godavari Gumbo", "top_tvd": 800.0, "bottom_tvd": 1800.0, "color": "#3F6212"},
-            {"name": "Ravva Formation", "top_tvd": 1800.0, "bottom_tvd": 3200.0, "color": "#DC2626"},
-            {"name": "Cretaceous Basement", "top_tvd": 3200.0, "bottom_tvd": tvd_max, "color": "#7C3AED"}
+            {"name": "Shallow Marine Sediments", "top_tvd": 0.0, "bottom_tvd": 800.0, "color": "#B1B1B1"},
+            {"name": "Godavari Gumbo", "top_tvd": 800.0, "bottom_tvd": 1800.0, "color": "#585858"},
+            {"name": "Ravva Formation", "top_tvd": 1800.0, "bottom_tvd": 3200.0, "color": "#727272"},
+            {"name": "Cretaceous Basement", "top_tvd": 3200.0, "bottom_tvd": tvd_max, "color": "#676767"}
         ]
         casing_shoes = [
-            {"casing_type": 'Structural Casing 30"', "tvd_depth": 120.0, "color": "#94A3B8", "notes": "Deepwater mudline structural foundation"},
-            {"casing_type": 'Conductor Casing 20"', "tvd_depth": 650.0, "color": "#38BDF8", "notes": "Isolates Shallow Water Flow (SWF) sand lenses"},
-            {"casing_type": 'Surface Casing 13-3/8"', "tvd_depth": 1750.0, "color": "#F59E0B", "notes": "Covers reactive Godavari gumbo clay"},
-            {"casing_type": 'Intermediate Liner 9-7/8"', "tvd_depth": 3150.0, "color": "#E11D48", "notes": "Protects Ravva overpressure before Cretaceous HPHT"},
-            {"casing_type": 'Production Liner 7"', "tvd_depth": min(4150.0, tvd_max - 100.0), "color": "#10B981", "notes": "Deep Cretaceous pay isolation"}
+            {"casing_type": 'Structural Casing 30"', "tvd_depth": 120.0, "color": "#A2A2A2", "notes": "Deepwater mudline structural foundation"},
+            {"casing_type": 'Conductor Casing 20"', "tvd_depth": 650.0, "color": "#B1B1B1", "notes": "Isolates Shallow Water Flow (SWF) sand lenses"},
+            {"casing_type": 'Surface Casing 13-3/8"', "tvd_depth": 1750.0, "color": "#B1B1B1", "notes": "Covers reactive Godavari gumbo clay"},
+            {"casing_type": 'Intermediate Liner 9-7/8"', "tvd_depth": 3150.0, "color": "#747474", "notes": "Protects Ravva overpressure before Cretaceous HPHT"},
+            {"casing_type": 'Production Liner 7"', "tvd_depth": min(4150.0, tvd_max - 100.0), "color": "#A3A3A3", "notes": "Deep Cretaceous pay isolation"}
         ]
         notes_str = "Illustrative / Not Yet Calibrated: Regional Eaton model for KG Deepwater reflecting reduced overburden stress, gumbo undercompaction, and narrow HPHT drilling margins."
 
@@ -178,16 +178,16 @@ def get_ppfg_safe_window(
         fg_raw = pp_raw + stress_ratio * (sigma_v - pp_raw) + 0.8  # tectonic confinement boost
 
         formations = [
-            {"name": "Bokabil Formation", "top_tvd": 0.0, "bottom_tvd": 1500.0, "color": "#F59E0B"},
-            {"name": "Upper Bhuban", "top_tvd": 1500.0, "bottom_tvd": 2500.0, "color": "#B45309"},
-            {"name": "Middle Bhuban", "top_tvd": 2500.0, "bottom_tvd": 3400.0, "color": "#78350F"},
-            {"name": "Disang Flysch", "top_tvd": 3400.0, "bottom_tvd": tvd_max, "color": "#475569"}
+            {"name": "Bokabil Formation", "top_tvd": 0.0, "bottom_tvd": 1500.0, "color": "#B1B1B1"},
+            {"name": "Upper Bhuban", "top_tvd": 1500.0, "bottom_tvd": 2500.0, "color": "#6F6F6F"},
+            {"name": "Middle Bhuban", "top_tvd": 2500.0, "bottom_tvd": 3400.0, "color": "#494949"},
+            {"name": "Disang Flysch", "top_tvd": 3400.0, "bottom_tvd": tvd_max, "color": "#545454"}
         ]
         casing_shoes = [
-            {"casing_type": 'Conductor 20"', "tvd_depth": 80.0, "color": "#94A3B8", "notes": "Valley gravels and mountain slope surface wash"},
-            {"casing_type": 'Surface Casing 13-3/8"', "tvd_depth": 750.0, "color": "#38BDF8", "notes": "Stabilizes dipping Bokabil bedded formations"},
-            {"casing_type": 'Intermediate Casing 9-5/8"', "tvd_depth": 2450.0, "color": "#F59E0B", "notes": "Set above Middle Bhuban high-torque packoff zone"},
-            {"casing_type": 'Production Casing 7"', "tvd_depth": min(3800.0, tvd_max - 100.0), "color": "#10B981", "notes": "Covers Middle Bhuban pay into Disang flysch"}
+            {"casing_type": 'Conductor 20"', "tvd_depth": 80.0, "color": "#A2A2A2", "notes": "Valley gravels and mountain slope surface wash"},
+            {"casing_type": 'Surface Casing 13-3/8"', "tvd_depth": 750.0, "color": "#B1B1B1", "notes": "Stabilizes dipping Bokabil bedded formations"},
+            {"casing_type": 'Intermediate Casing 9-5/8"', "tvd_depth": 2450.0, "color": "#B1B1B1", "notes": "Set above Middle Bhuban high-torque packoff zone"},
+            {"casing_type": 'Production Casing 7"', "tvd_depth": min(3800.0, tvd_max - 100.0), "color": "#A3A3A3", "notes": "Covers Middle Bhuban pay into Disang flysch"}
         ]
         notes_str = "Illustrative / Not Yet Calibrated: Regional Eaton model for Mizoram Fold Belt accounting for tectonic compression, elevated fracture confinement, and dipping bed overpressures."
 
@@ -221,16 +221,16 @@ def get_ppfg_safe_window(
         fg_raw = pp_raw + stress_ratio * (sigma_v - pp_raw)
 
         formations = [
-            {"name": "Tipam Sandstone", "top_tvd": 0.0, "bottom_tvd": 1450.0, "color": "#EAB308"},
-            {"name": "Girujan Clay", "top_tvd": 1450.0, "bottom_tvd": 2000.0, "color": "#8B4513"},
-            {"name": "Barail Formation", "top_tvd": 2000.0, "bottom_tvd": 2950.0, "color": "#F97316"},
-            {"name": "Kopili Formation", "top_tvd": 2950.0, "bottom_tvd": tvd_max, "color": "#A855F7"}
+            {"name": "Tipam Sandstone", "top_tvd": 0.0, "bottom_tvd": 1450.0, "color": "#BBBBBB"},
+            {"name": "Girujan Clay", "top_tvd": 1450.0, "bottom_tvd": 2000.0, "color": "#585858"},
+            {"name": "Barail Formation", "top_tvd": 2000.0, "bottom_tvd": 2950.0, "color": "#9A9A9A"},
+            {"name": "Kopili Formation", "top_tvd": 2950.0, "bottom_tvd": tvd_max, "color": "#808080"}
         ]
         casing_shoes = [
-            {"casing_type": 'Conductor 20"', "tvd_depth": 65.0, "color": "#94A3B8", "notes": "Structural integrity & shallow gravel isolation"},
-            {"casing_type": 'Surface Casing 13-3/8"', "tvd_depth": 650.0, "color": "#38BDF8", "notes": "Isolates Upper Dihing & shallow freshwater sands"},
-            {"casing_type": 'Intermediate Casing 9-5/8"', "tvd_depth": 2250.0, "color": "#F59E0B", "notes": "Set above high-pressure Barail kick zone"},
-            {"casing_type": 'Production Liner 7"', "tvd_depth": min(3200.0, tvd_max - 150.0), "color": "#10B981", "notes": "Covers Barail pay zone into Kopili basement"}
+            {"casing_type": 'Conductor 20"', "tvd_depth": 65.0, "color": "#A2A2A2", "notes": "Structural integrity & shallow gravel isolation"},
+            {"casing_type": 'Surface Casing 13-3/8"', "tvd_depth": 650.0, "color": "#B1B1B1", "notes": "Isolates Upper Dihing & shallow freshwater sands"},
+            {"casing_type": 'Intermediate Casing 9-5/8"', "tvd_depth": 2250.0, "color": "#B1B1B1", "notes": "Set above high-pressure Barail kick zone"},
+            {"casing_type": 'Production Liner 7"', "tvd_depth": min(3200.0, tvd_max - 150.0), "color": "#A3A3A3", "notes": "Covers Barail pay zone into Kopili basement"}
         ]
         notes_str = "Pore pressure and fracture gradient computed using Eaton's method (1975) calibrated to Upper Assam overpressure signatures using Volve and FORCE 2020 open data benchmarks."
 
@@ -275,23 +275,23 @@ def get_ppfg_safe_window(
     if current_ecd < current_pp:
         operating_status = "CRITICAL_UNDERBALANCED"
         status_message = f"DANGER: ECD ({current_ecd} ppg) is below Pore Pressure ({round(current_pp, 2)} ppg). High risk of influx/gas kick!"
-        status_color = "#EF4444"
+        status_color = "#848484"
     elif current_ecd > current_fg:
         operating_status = "CRITICAL_OVER_FRACTURE"
         status_message = f"DANGER: ECD ({current_ecd} ppg) exceeds Fracture Gradient ({round(current_fg, 2)} ppg). Severe lost circulation imminent!"
-        status_color = "#EF4444"
+        status_color = "#848484"
     elif margin_to_kick < 0.5:
         operating_status = "CAUTION_LOW_OVERBALANCE"
         status_message = f"CAUTION: Narrow trip margin ({margin_to_kick} ppg above pore pressure). Pre-treat active pits."
-        status_color = "#F59E0B"
+        status_color = "#B1B1B1"
     elif margin_to_loss < 0.8:
         operating_status = "CAUTION_HIGH_ECD"
         status_message = f"CAUTION: Operating close to formation breakdown ({margin_to_loss} ppg margin). Monitor annular pressure losses."
-        status_color = "#F59E0B"
+        status_color = "#B1B1B1"
     else:
         operating_status = "OPTIMAL_SAFE_WINDOW"
         status_message = f"SAFE: Operating safely inside the mud weight window (+{margin_to_kick} ppg overbalance, -{margin_to_loss} ppg below fracture limit)."
-        status_color = "#10B981"
+        status_color = "#A3A3A3"
 
     is_calibrated = True
 

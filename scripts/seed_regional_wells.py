@@ -21,7 +21,7 @@ REGIONAL_WELLS = [
         "spud_date": "2024-01-10",
         "surface_lat": 27.58,
         "surface_lon": 95.37,
-        "data_source": "volve_relabeled"
+        "data_source": "synthetic_calibrated"
     },
     {
         "well_id": "OIL-BAGHJAN-4",
@@ -51,7 +51,7 @@ REGIONAL_WELLS = [
         "spud_date": "2024-03-05",
         "surface_lat": 27.18,
         "surface_lon": 94.93,
-        "data_source": "volve_relabeled"
+        "data_source": "synthetic_calibrated"
     },
     {
         "well_id": "OIL-DIKOM-1",
@@ -71,7 +71,7 @@ REGIONAL_WELLS = [
         "spud_date": "2024-05-20",
         "surface_lat": 27.30,
         "surface_lon": 95.25,
-        "data_source": "volve_relabeled"
+        "data_source": "synthetic_calibrated"
     },
     {
         "well_id": "OIL-KOTHALONI-1",
@@ -81,7 +81,7 @@ REGIONAL_WELLS = [
         "spud_date": "2024-06-18",
         "surface_lat": 27.35,
         "surface_lon": 95.35,
-        "data_source": "volve_relabeled"
+        "data_source": "synthetic_calibrated"
     },
     {
         "well_id": "OIL-HAPJAN-1",
@@ -91,7 +91,7 @@ REGIONAL_WELLS = [
         "spud_date": "2024-07-22",
         "surface_lat": 27.45,
         "surface_lon": 95.40,
-        "data_source": "volve_relabeled"
+        "data_source": "synthetic_calibrated"
     },
     {
         "well_id": "OIL-SHALMARI-1",
@@ -101,7 +101,7 @@ REGIONAL_WELLS = [
         "spud_date": "2024-08-11",
         "surface_lat": 27.38,
         "surface_lon": 95.12,
-        "data_source": "volve_relabeled"
+        "data_source": "synthetic_calibrated"
     },
     {
         "well_id": "OIL-KUSIJAN-1",

@@ -9,10 +9,10 @@ class RegionGeology(TypedDict):
 REGIONAL_GEOLOGY_CONFIG: Dict[str, RegionGeology] = {
     "assam": {
         "formations": [
-            ("Tipam Sandstone", 1450.0, "#EAB308", "Freshwater permeable sand reservoir, severe thief-bed mud loss"),
-            ("Girujan Clay", 2000.0, "#8B4513", "Sloughing/caving shale"),
-            ("Barail Formation", 2400.0, "#F97316", "Overpressured sand-shale (Known Kick Zone & differential sticking)"),
-            ("Kopili Formation", 2950.0, "#A855F7", "Deep marine shale transition, swelling reactive shale")
+            ("Tipam Sandstone", 1450.0, "#BBBBBB", "Freshwater permeable sand reservoir, severe thief-bed mud loss"),
+            ("Girujan Clay", 2000.0, "#585858", "Sloughing/caving shale"),
+            ("Barail Formation", 2400.0, "#9A9A9A", "Overpressured sand-shale (Known Kick Zone & differential sticking)"),
+            ("Kopili Formation", 2950.0, "#808080", "Deep marine shale transition, swelling reactive shale")
         ],
         "risk_curve": lambda z: (
             0.12 + 0.08 * np.sin(z / 200.0) if z < 1400 else
@@ -23,10 +23,10 @@ REGIONAL_GEOLOGY_CONFIG: Dict[str, RegionGeology] = {
     },
     "rajasthan": {
         "formations": [
-            ("Pariwar Formation", 1200.0, "#FCD34D", "Sand abrasion & filtration loss"),
-            ("Baisakhi Formation", 1800.0, "#9CA3AF", "Tight hole"),
-            ("Jodhpur Sandstone", 2300.0, "#D97706", "Heavy oil viscous drag & differential sticking"),
-            ("Bilara Carbonates", 2800.0, "#94A3B8", "Massive cavernous lost circulation & torque vibration")
+            ("Pariwar Formation", 1200.0, "#D7D7D7", "Sand abrasion & filtration loss"),
+            ("Baisakhi Formation", 1800.0, "#A2A2A2", "Tight hole"),
+            ("Jodhpur Sandstone", 2300.0, "#909090", "Heavy oil viscous drag & differential sticking"),
+            ("Bilara Carbonates", 2800.0, "#A2A2A2", "Massive cavernous lost circulation & torque vibration")
         ],
         "risk_curve": lambda z: (
             0.15 + 0.1 * np.sin(z / 300.0) if z < 1200 else
@@ -37,10 +37,10 @@ REGIONAL_GEOLOGY_CONFIG: Dict[str, RegionGeology] = {
     },
     "kg": {
         "formations": [
-            ("Shallow Marine Sediments", 800.0, "#38BDF8", "Shallow Water Flow / gas hydrates"),
-            ("Godavari Gumbo", 1800.0, "#3F6212", "Gumbo bit balling & plugging"),
-            ("Ravva Formation", 3200.0, "#DC2626", "Narrow PP-FG window & rapid gas influx"),
-            ("Cretaceous", 4200.0, "#7C3AED", "HPHT overpressures")
+            ("Shallow Marine Sediments", 800.0, "#B1B1B1", "Shallow Water Flow / gas hydrates"),
+            ("Godavari Gumbo", 1800.0, "#585858", "Gumbo bit balling & plugging"),
+            ("Ravva Formation", 3200.0, "#727272", "Narrow PP-FG window & rapid gas influx"),
+            ("Cretaceous", 4200.0, "#676767", "HPHT overpressures")
         ],
         "risk_curve": lambda z: (
             0.40 + 0.2 * np.exp(-((z - 600.0) / 200.0) ** 2) if z < 1200 else
@@ -51,10 +51,10 @@ REGIONAL_GEOLOGY_CONFIG: Dict[str, RegionGeology] = {
     },
     "mizoram": {
         "formations": [
-            ("Bokabil Formation", 1500.0, "#F59E0B", "Tectonic ovalization"),
-            ("Upper Bhuban", 2500.0, "#B45309", "High horizontal stress breakout"),
-            ("Middle Bhuban", 3400.0, "#78350F", "Steeply dipping bedding-plane packoff & catastrophic stuck pipe"),
-            ("Disang Flysch", 4100.0, "#475569", "Tectonic crushed rock overpressure")
+            ("Bokabil Formation", 1500.0, "#B1B1B1", "Tectonic ovalization"),
+            ("Upper Bhuban", 2500.0, "#6F6F6F", "High horizontal stress breakout"),
+            ("Middle Bhuban", 3400.0, "#494949", "Steeply dipping bedding-plane packoff & catastrophic stuck pipe"),
+            ("Disang Flysch", 4100.0, "#545454", "Tectonic crushed rock overpressure")
         ],
         "risk_curve": lambda z: (
             0.30 + 0.1 * np.sin(z / 300.0) if z < 1500 else
@@ -152,7 +152,7 @@ def compute_realistic_trajectory(well_id: str, tvd_max: float, is_active: bool =
         for ev in db_events:
             if ev.formation and ev.depth_start_tvd and ev.depth_start_tvd < tvd_max:
                 fname = f"{ev.formation} Top"
-                fcolor = "#EF4444" if "kick" in (ev.event_type or "").lower() else "#38BDF8"
+                fcolor = "#848484" if "kick" in (ev.event_type or "").lower() else "#B1B1B1"
                 fdesc = f"Historical {ev.event_type} at {round(ev.depth_start_tvd, 1)}m"
                 formation_specs.append((fname, ev.depth_start_tvd, fcolor, fdesc))
                 
@@ -236,13 +236,13 @@ def compute_anti_collision(active_traj: dict, offset_traj: dict):
     # Industry status: SF < 1.5 -> CRITICAL; 1.5 <= SF < 3.0 -> CAUTION; >= 3.0 -> SAFE
     if separation_factor < 1.5:
         status = "CRITICAL"
-        color = "#EF4444"
+        color = "#848484"
     elif separation_factor < 3.0:
         status = "CAUTION"
-        color = "#F59E0B"
+        color = "#B1B1B1"
     else:
         status = "SAFE"
-        color = "#10B981"
+        color = "#A3A3A3"
         
     return {
         "offset_well_id": offset_traj["well_id"],

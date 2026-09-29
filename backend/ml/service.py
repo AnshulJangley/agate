@@ -4,6 +4,31 @@ import joblib
 import pandas as pd
 import numpy as np
 
+#: Pounds per gallon in one unit of specific gravity.
+PPG_PER_SG = 8.345
+
+#: Model features that are densities, and therefore unit-sensitive.
+DENSITY_FEATURES = ("mud_weight", "ecd")
+
+
+def to_model_units(feature: str, value: float) -> float:
+    """
+    Convert a platform density value (ppg) into the unit the model was trained in (sg).
+
+    `ml_training_data.csv` carries mud_weight as a constant 1.17 and ecd as 1.20-1.24 —
+    specific gravity — while every other layer of the platform uses ppg. The model is fed
+    through this function so it sees values in its own units.
+
+    The 3.0 threshold separates the scales unambiguously: drilling mud weights are 8-20
+    ppg and 1-2 sg, with nothing in between. A value already in sg — including the 1.17
+    baseline from model_metadata.json — passes through untouched, so this is safe to
+    apply unconditionally.
+    """
+    if feature in DENSITY_FEATURES and value > 3.0:
+        return value / PPG_PER_SG
+    return value
+
+
 class HazardPredictionService:
     _instance = None
     
@@ -145,12 +170,18 @@ class HazardPredictionService:
         # Clamp to realistic physical range [0.4, 3.5]
         return float(round(max(0.4, min(3.5, d_xc)), 3))
 
-    def calculate_fracture_gradient_margin(self, depth_tvd: float, ecd: float, pore_pressure_ppg: float = 10.2, well_id: str = "") -> tuple:
+    def regional_geomechanics(self, depth_tvd: float, pore_pressure_ppg: float = 10.2,
+                              well_id: str = "") -> tuple:
         """
-        Calculates Formation Fracture Gradient (FG) and current drilling margin in ppg.
-        Formula Source: Eaton, B.A. (1969), "Fracture Gradient Prediction and Its Application in 
-                        Deep Drilling Operations", SPE-2163-PA, Journal of Petroleum Technology, 21(10), pp. 1353-1360.
-        Calibrated to regional geomechanical regimes across Indian basins.
+        Region-calibrated pore pressure, overburden gradient and Poisson's ratio.
+
+        Extracted from calculate_fracture_gradient_margin, which needed all three to
+        derive a fracture gradient. Overpressure and cementing risk need the *pore
+        pressure* equivalent directly: an overpressured zone is one where pore
+        pressure is closing on the mud column, which a fracture margin alone cannot
+        express.
+
+        Returns (pp_ppg, obg_ppg, nu).
         """
         wid = (well_id or "").upper()
         if "KG" in wid:
@@ -169,7 +200,17 @@ class HazardPredictionService:
             obg_ppg = 19.23
             nu = 0.40
             pp = pore_pressure_ppg if pore_pressure_ppg and pore_pressure_ppg > 5.0 else 10.2
-        
+        return float(pp), float(obg_ppg), float(nu)
+
+    def calculate_fracture_gradient_margin(self, depth_tvd: float, ecd: float, pore_pressure_ppg: float = 10.2, well_id: str = "") -> tuple:
+        """
+        Calculates Formation Fracture Gradient (FG) and current drilling margin in ppg.
+        Formula Source: Eaton, B.A. (1969), "Fracture Gradient Prediction and Its Application in
+        Deep Drilling Operations", SPE-2163-PA, Journal of Petroleum Technology, 21(10), pp. 1353-1360.
+        Calibrated to regional geomechanical regimes across Indian basins.
+        """
+        pp, obg_ppg, nu = self.regional_geomechanics(depth_tvd, pore_pressure_ppg, well_id)
+
         stress_ratio = nu / (1.0 - nu)
         fg_ppg = pp + stress_ratio * (obg_ppg - pp)
         current_ecd = ecd if ecd and ecd > 5.0 else (pp + 0.5)
@@ -246,11 +287,31 @@ class HazardPredictionService:
         torque_roll_std = float(current_params['torque_roll_std_5'])
         
         # 3. Vectorize inputs for LightGBM
+        #
+        # Unit boundary. The model was trained on data/processed/ml_training_data.csv, in
+        # which mud_weight is a constant 1.17 and ecd ranges 1.20-1.24 — SPECIFIC GRAVITY.
+        # Every other layer of this platform uses ppg: the physics functions (rho_normal
+        # 9.0 ppg, regional pore pressures in ppg), the simulator (10.8-13.6), and the
+        # seeded events. Feeding ppg straight through put those two features ~9x outside
+        # the range the model ever saw.
+        #
+        # Converted here, at the single point the model is fed, rather than changing either
+        # side's native units. The 3.0 threshold separates the two scales cleanly — ppg mud
+        # weights are 8-20, specific gravities are 1-2 — so a value already in sg (including
+        # the 1.17 baseline below) is left alone.
+        #
+        # BE HONEST ABOUT THE REMAINDER: this fixes mud_weight and ecd only. d_xc is still
+        # fed ~0.94 against a training range of 8.22-8.24, and depth/rop/wob/rpm/torque are
+        # outside a training set that spans only 2850-2890 m. Three declared features
+        # (flow_out_pct, pit_gain_bbl, spp_psi) are absent from the training CSV entirely.
+        # The 20% ML weight is therefore nominal on this corpus — the 80% physics term is
+        # carrying the result. See §5.16 in the handoff.
         input_data = {}
         for f in features_required:
             val = current_params.get(f)
-            input_data[f] = [float(val) if val is not None else float(baselines.get(f, 0.0))]
-            
+            raw = float(val) if val is not None else float(baselines.get(f, 0.0))
+            input_data[f] = [to_model_units(f, raw)]
+
         df_input = pd.DataFrame(input_data)
         
         # 4. Base ML Model Prediction
@@ -355,6 +416,71 @@ class HazardPredictionService:
         torque_level = "CRITICAL" if torque_prob >= 0.80 else "HIGH" if torque_prob >= 0.65 else "MEDIUM" if torque_prob >= 0.35 else "LOW"
         torque_reason = "; ".join(torque_reasons) if torque_reasons else "Smooth rotary drillstring rotation"
         
+        # 5.5 Overpressure Risk
+        # Physical driver: the d-exponent. Under normal compaction d_xc rises with
+        # depth, so a *reversal* is the classic real-time overpressure indicator
+        # (Jorden & Shirley 1966) — the same reference calculate_d_xc cites. The
+        # kick scorer touches d_xc as a secondary hint; overpressure is the hazard
+        # it actually measures.
+        well_id_str = str(current_params.get('well_id', '') or '')
+        pp_ppg, _obg_ppg, _nu = self.regional_geomechanics(depth_tvd, well_id=well_id_str)
+        pp_margin_ppg = ecd - pp_ppg  # > 0 means the mud column is overbalanced
+
+        op_score = 0.05
+        op_reasons = []
+        if d_xc < 1.10:
+            op_score += min(0.45, (1.10 - d_xc) * 1.5)
+            op_reasons.append(f"d_xc reversal ({d_xc:.2f}) below the normal compaction trend")
+        if pp_margin_ppg < 0.50:
+            op_score += 0.30
+            op_reasons.append(f"Pore pressure {pp_ppg:.2f} ppg closing on the {ecd:.2f} ppg mud column")
+        if rop > 22.0 and d_xc < 1.25:
+            op_score += 0.15
+            op_reasons.append("Drilling break coincident with low d_xc")
+
+        physics_op_prob = float(round(max(0.03, min(0.95, op_score)), 3))
+        # Physics-only: the model's four trained labels do not include overpressure,
+        # so there is no ML term to blend. Reported as `basis: physics` rather than
+        # dressed up as model-backed.
+        op_prob = physics_op_prob
+        op_level = "CRITICAL" if op_prob >= 0.80 else "HIGH" if op_prob >= 0.65 else "MEDIUM" if op_prob >= 0.35 else "LOW"
+        op_reason = "; ".join(op_reasons) if op_reasons else "Normal compaction trend; pore pressure within the mud column"
+
+        # 5.6 Cementing Risk
+        # Drivers are ordered as a cement job actually fails:
+        #   1. losses while placing — slurry goes into the formation and the top of
+        #      cement lands below the shoe, leaving the annulus unisolated;
+        #   2. ECD at or above the fracture gradient at the shoe;
+        #   3. a thin pore-pressure margin, which is what lets gas channel through
+        #      unset cement.
+        # (3) is the failure mode of the Baghjan-5 blowout of May 2020: the plug never
+        # set, the cement column behaved as a water column, and gas percolated up it.
+        cem_score = 0.05
+        cem_reasons = []
+        if flow_out_pct < 97.0:
+            cem_score += min(0.30, (100.0 - flow_out_pct) * 0.022)
+            cem_reasons.append(f"Returns deficit {100.0 - flow_out_pct:.1f}% — slurry loss to formation")
+        if pit_gain_bbl < -2.0:
+            cem_score += min(0.25, abs(pit_gain_bbl) * 0.016)
+            cem_reasons.append(f"Active pit loss {pit_gain_bbl:.1f} bbl during placement")
+        if fg_margin_ppg < 0.60:
+            cem_score += 0.25
+            cem_reasons.append(f"ECD within {fg_margin_ppg:.2f} ppg of the fracture gradient")
+        if pp_margin_ppg < 0.50:
+            cem_score += 0.25
+            cem_reasons.append(f"Thin pore-pressure margin ({pp_margin_ppg:.2f} ppg) — gas channelling risk through unset cement")
+        if spp_psi > 3200.0:
+            cem_score += 0.15
+            cem_reasons.append(f"Elevated standpipe pressure ({spp_psi:.0f} psi) — annular restriction during placement")
+        if pit_gain_bbl > 2.0:
+            cem_score += 0.15
+            cem_reasons.append(f"Pit gain {pit_gain_bbl:.1f} bbl — influx into unset cement")
+
+        physics_cem_prob = float(round(max(0.03, min(0.95, cem_score)), 3))
+        cem_prob = physics_cem_prob  # physics-only, same reason as overpressure
+        cem_level = "CRITICAL" if cem_prob >= 0.80 else "HIGH" if cem_prob >= 0.65 else "MEDIUM" if cem_prob >= 0.35 else "LOW"
+        cem_reason = "; ".join(cem_reasons) if cem_reasons else "No barrier-placement indicators; annulus isolation not degraded"
+
         # Assemble hazard metrics
         hazards_dict = {
             "gas_kick": {
@@ -362,31 +488,51 @@ class HazardPredictionService:
                 "level": kick_level,
                 "trigger_reason": kick_reason,
                 "key_indicator": f"Flow: {flow_out_pct:.1f}%, Pit: {pit_gain_bbl:+.1f} bbl",
-                "margin": round(fg_margin_ppg, 2)
+                "margin": round(fg_margin_ppg, 2),
+                "basis": "physics+ml"
             },
             "lost_circulation": {
                 "probability": loss_prob,
                 "level": loss_level,
                 "trigger_reason": loss_reason,
                 "key_indicator": f"Flow: {flow_out_pct:.1f}%, FG Margin: {fg_margin_ppg:+.2f} ppg",
-                "margin": round(fg_margin_ppg, 2)
+                "margin": round(fg_margin_ppg, 2),
+                "basis": "physics+ml"
             },
             "stuck_pipe": {
                 "probability": stuck_prob,
                 "level": stuck_level,
                 "trigger_reason": stuck_reason,
                 "key_indicator": f"Torque: {torque:.0f} ft-lbf, MSE: {mse_kpsi:.1f} kpsi",
-                "margin": round(mse_kpsi, 2)
+                "margin": round(mse_kpsi, 2),
+                "basis": "physics+ml"
             },
             "torque_drag": {
                 "probability": torque_prob,
                 "level": torque_level,
                 "trigger_reason": torque_reason,
                 "key_indicator": f"Torque Std: {torque_roll_std:.0f} ft-lbf",
-                "margin": round(torque, 1)
+                "margin": round(torque, 1),
+                "basis": "physics+ml"
+            },
+            "overpressure": {
+                "probability": op_prob,
+                "level": op_level,
+                "trigger_reason": op_reason,
+                "key_indicator": f"d_xc: {d_xc:.2f}, PP margin: {pp_margin_ppg:+.2f} ppg",
+                "margin": round(pp_margin_ppg, 2),
+                "basis": "physics"
+            },
+            "cementing": {
+                "probability": cem_prob,
+                "level": cem_level,
+                "trigger_reason": cem_reason,
+                "key_indicator": f"FG margin: {fg_margin_ppg:+.2f} ppg, PP margin: {pp_margin_ppg:+.2f} ppg",
+                "margin": round(min(fg_margin_ppg, pp_margin_ppg), 2),
+                "basis": "physics"
             }
         }
-        
+
         # Also provide alias keys for automated tests expecting {kick, loss, stuck_pipe, torque}
         hazard_breakdown_dict = {
             "kick": hazards_dict["gas_kick"],
@@ -395,14 +541,17 @@ class HazardPredictionService:
             "torque": hazards_dict["torque_drag"],
             "gas_kick": hazards_dict["gas_kick"],
             "lost_circulation": hazards_dict["lost_circulation"],
-            "torque_drag": hazards_dict["torque_drag"]
+            "torque_drag": hazards_dict["torque_drag"],
+            "overpressure": hazards_dict["overpressure"],
+            "cementing": hazards_dict["cementing"]
         }
         
         # 6. Backward Compatibility: Meaningful single composite risk_probability
         # Guarantee: risk_probability is strictly responsive to whichever hazard peaks,
         # never disconnected or stale.
-        max_hazard = max(kick_prob, loss_prob, stuck_prob, torque_prob)
-        mean_hazard = (kick_prob + loss_prob + stuck_prob + torque_prob) / 4.0
+        all_hazards = (kick_prob, loss_prob, stuck_prob, torque_prob, op_prob, cem_prob)
+        max_hazard = max(all_hazards)
+        mean_hazard = sum(all_hazards) / len(all_hazards)
         composite_hazard = 0.70 * max_hazard + 0.30 * mean_hazard
         
         final_risk_prob = float(round(composite_hazard, 3))

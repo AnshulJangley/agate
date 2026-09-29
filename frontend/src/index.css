@@ -4,16 +4,34 @@
 
 @layer base {
   body {
-    @apply bg-[#070b14] text-slate-200 antialiased overflow-hidden font-sans;
-    background-image: 
-      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(6, 182, 212, 0.08), transparent 70%),
-      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(99, 102, 241, 0.05), transparent 60%);
+    @apply bg-[#0B0B0B] text-slate-200 antialiased overflow-hidden font-sans;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(166, 166, 166, 0.08), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(119, 119, 119, 0.05), transparent 60%);
   }
 }
 
+/* The basemap canvas is deliberately NOT desaturated — the map is the one
+   surface that stays in colour.
+
+   MapLibre draws the basemap into a WebGL canvas from a remote vector style, so
+   no Tailwind palette or CSS colour declaration can reach it. A
+   `.maplibregl-canvas { filter: grayscale(1) }` rule lived here and is what
+   removed the map's colour.
+
+   This is the settled state, after a round trip: the interface is
+   black/white/grey, and the map is the sole exception. The map's data colours in
+   WellMap.jsx are written as arbitrary values (`bg-[#22c55e]`,
+   `paint={{'fill-color': '#00f0ff'}}`) precisely so the palette override in
+   tailwind.config.js cannot grey them.
+
+   If a future change re-adds the grayscale filter here, it must also grey the
+   map's values in WellMap.jsx — otherwise markers and the search-radius circle
+   render in colour on a grey basemap. The two move together. */
+
 /* Glassmorphism System */
 .glass-panel {
-  background: rgba(12, 19, 34, 0.82);
+  background: rgba(19, 19, 19, 0.82);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.07);
@@ -21,15 +39,15 @@
 }
 
 .glass-panel-glow {
-  background: rgba(12, 19, 34, 0.88);
+  background: rgba(19, 19, 19, 0.88);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(6, 182, 212, 0.25);
-  box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.18), 0 8px 32px 0 rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(166, 166, 166, 0.25);
+  box-shadow: 0 0 25px -5px rgba(166, 166, 166, 0.18), 0 8px 32px 0 rgba(0, 0, 0, 0.55);
 }
 
 .glass-card {
-  background: linear-gradient(135deg, rgba(17, 26, 46, 0.75) 0%, rgba(12, 19, 34, 0.85) 100%);
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.75) 0%, rgba(19, 19, 19, 0.85) 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -37,15 +55,15 @@
 }
 
 .glass-card:hover {
-  border-color: rgba(6, 182, 212, 0.35);
-  box-shadow: 0 4px 20px -2px rgba(6, 182, 212, 0.12);
+  border-color: rgba(166, 166, 166, 0.35);
+  box-shadow: 0 4px 20px -2px rgba(166, 166, 166, 0.12);
 }
 
 /* Custom Tactical Range Slider */
 input[type=range] {
   -webkit-appearance: none;
   appearance: none;
-  background: #17233d;
+  background: #232323;
   height: 6px;
   border-radius: 9999px;
   outline: none;
@@ -56,22 +74,22 @@ input[type=range]::-webkit-slider-thumb {
   height: 16px;
   width: 16px;
   border-radius: 50%;
-  background: #06b6d4;
-  border: 2px solid #070b14;
-  box-shadow: 0 0 10px rgba(6, 182, 212, 0.7);
+  background: #A6A6A6;
+  border: 2px solid #0B0B0B;
+  box-shadow: 0 0 10px rgba(166, 166, 166, 0.7);
   cursor: pointer;
   transition: transform 0.15s ease, background 0.15s ease;
 }
 
 input[type=range]::-webkit-slider-thumb:hover {
   transform: scale(1.25);
-  background: #22d3ee;
+  background: #C1C1C1;
 }
 
 /* Custom Scrollbar */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #263554 #070b14;
+  scrollbar-color: #353535 #0B0B0B;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -79,16 +97,16 @@ input[type=range]::-webkit-slider-thumb:hover {
   height: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #070b14;
+  background: #0B0B0B;
   border-radius: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #263554;
+  background: #353535;
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #06b6d4;
+  background: #A6A6A6;
 }
 
 /* Radar Sweep Keyframe */
@@ -107,18 +125,126 @@ input[type=range]::-webkit-slider-thumb:hover {
 
 /* Phosphor Glow Badges */
 .glow-badge-emerald {
-  box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 12px rgba(163, 163, 163, 0.25);
 }
 
 .glow-badge-amber {
-  box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+  box-shadow: 0 0 12px rgba(177, 177, 177, 0.25);
 }
 
 .glow-badge-cyan {
-  box-shadow: 0 0 12px rgba(6, 182, 212, 0.25);
+  box-shadow: 0 0 12px rgba(166, 166, 166, 0.25);
 }
 
 .glow-badge-rose {
-  box-shadow: 0 0 12px rgba(244, 63, 94, 0.3);
+  box-shadow: 0 0 12px rgba(133, 133, 133, 0.3);
+}
+
+/* Cyber Well Popup (MapLibre) — moved out of a runtime <style> block in WellMap.jsx.
+   !important is retained because maplibre-gl.css is imported from the component and
+   may be injected after this stylesheet. */
+.cyber-well-popup .maplibregl-popup-content {
+  background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border-radius: 6px !important;
+}
+
+.cyber-well-popup .maplibregl-popup-tip {
+  border-top-color: #D9D9D9 !important;
+  border-bottom-color: #D9D9D9 !important;
+}
+
+
+/* ---------------------------------------------------------------------------
+   Collapsible telemetry drawer (App.jsx).
+
+   When collapsed, the aside shrinks to a slim rail and everything except the
+   rail is hidden. Done in CSS rather than by conditionally rendering ~600 lines
+   of drawer JSX, so the drawer's internal state (scroll position, expanded
+   gauges) survives collapsing and expanding.
+
+   Scoped to lg+ because on mobile the drawer is a full-screen tab, and
+   .telemetry-collapsed is never applied there.
+--------------------------------------------------------------------------- */
+@media (min-width: 1024px) {
+  .telemetry-collapsed > *:not(.telemetry-rail) {
+    display: none !important;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Library palettes the Tailwind override cannot reach.
+
+   Scanning the built CSS for non-grey values after the monochrome pass left
+   exactly two sources, and neither is a Tailwind utility, so neither is
+   affected by the palette in tailwind.config.js:
+
+     1. @tailwindcss/typography bakes Tailwind's default *bluish* gray into
+        --tw-prose-* custom properties. Those show up in the Assistant page,
+        which renders markdown through `prose prose-invert`.
+     2. maplibre-gl ships its own stylesheet with a brand-blue focus ring and a
+        blue geolocation dot.
+
+   This block is what closes them.
+--------------------------------------------------------------------------- */
+
+.prose,
+.prose-invert {
+  /* Both families are required. `.prose-invert` (used by the Assistant page)
+     does not carry its own greys — it re-points every --tw-prose-* variable at
+     the matching --tw-prose-invert-* one, so setting only the first set leaves
+     the markdown rendering in the plugin's bluish grays. */
+  --tw-prose-body: #d4d4d4;
+  --tw-prose-headings: #f0f0f0;
+  --tw-prose-lead: #a3a3a3;
+  --tw-prose-links: #ffffff;
+  --tw-prose-bold: #f0f0f0;
+  --tw-prose-counters: #7d7d7d;
+  --tw-prose-bullets: #5a5a5a;
+  --tw-prose-hr: #2b2b2b;
+  --tw-prose-quotes: #e5e5e5;
+  --tw-prose-quote-borders: #3a3a3a;
+  --tw-prose-captions: #7d7d7d;
+  --tw-prose-code: #f0f0f0;
+  --tw-prose-pre-code: #d4d4d4;
+  --tw-prose-pre-bg: #131313;
+  --tw-prose-th-borders: #3a3a3a;
+  --tw-prose-td-borders: #2b2b2b;
+
+  --tw-prose-invert-body: #d4d4d4;
+  --tw-prose-invert-headings: #f0f0f0;
+  --tw-prose-invert-lead: #a3a3a3;
+  --tw-prose-invert-links: #ffffff;
+  --tw-prose-invert-bold: #f0f0f0;
+  --tw-prose-invert-counters: #7d7d7d;
+  --tw-prose-invert-bullets: #5a5a5a;
+  --tw-prose-invert-hr: #2b2b2b;
+  --tw-prose-invert-quotes: #e5e5e5;
+  --tw-prose-invert-quote-borders: #3a3a3a;
+  --tw-prose-invert-captions: #7d7d7d;
+  --tw-prose-invert-code: #f0f0f0;
+  --tw-prose-invert-pre-code: #d4d4d4;
+  --tw-prose-invert-pre-bg: #131313;
+  --tw-prose-invert-th-borders: #3a3a3a;
+  --tw-prose-invert-td-borders: #2b2b2b;
+}
+
+/* Map control chrome — zoom buttons, attribution — keeps maplibre's own palette,
+   including a brand-blue focus ring. Desaturating the control containers covers
+   the ring and anything else the library draws.
+   An override of the `:focus` box-shadow was tried first and silently vanished
+   from the bundle: maplibre's stylesheet declares the same selector later in the
+   concatenated CSS and the minifier dropped the shadowed rule. Filtering the
+   container sidesteps the cascade entirely. */
+.maplibregl-ctrl-group,
+.maplibregl-ctrl-attrib {
+  filter: grayscale(1);
+}
+
+.maplibregl-user-location-dot,
+.maplibregl-user-location-dot::before {
+  background-color: #A3A3A3 !important;
 }
 

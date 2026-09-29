@@ -4,32 +4,34 @@ import { Database, ShieldCheck, Cpu, AlertCircle } from 'lucide-react';
 /**
  * Reusable Data Provenance Badge component.
  * Displays verifiable data origin with explanatory tooltips:
- * - "volve_relabeled": Equinor Volve Open Data (North Sea), calibrated to Upper Assam basin
- * - "force2020_relabeled": FORCE 2020 ML Competition Log Benchmark
+ * - "synthetic_calibrated": Generated well/log data, calibrated to regional Indian stratigraphy
  * - "synthetic": Regional Geomechanical Synthetic Calibration
  * - "illustrative_uncalibrated": Illustrative / Not Yet Calibrated — architecture demonstration only, no real or Volve-analog data basis
+ * - "incident_report_real": Real, publicly documented Indian drilling incident
  */
 export const SOURCE_CONFIGS = {
-  volve_relabeled: {
-    label: "Volve (Relabeled)",
-    shortLabel: "Volve",
-    bgColor: "bg-amber-500/15",
-    textColor: "text-amber-300",
-    borderColor: "border-amber-500/40",
-    dotColor: "bg-amber-400",
+  // Renamed from `volve_relabeled`. That key claimed the well and log data was
+  // derived from Equinor's Volve open dataset; it was not. `data/raw/` is empty and
+  // `scripts/03_build_well_logs.py` logs "No raw well logs found. Generating synthetic
+  // well log data..." — the value was the platform's *default* provenance label, so
+  // every unspecified well inherited a claim that had never been verified.
+  // The old key is kept as an alias so any value still in a database resolves here.
+  synthetic_calibrated: {
+    label: "Synthetic · Assam-Calibrated",
+    shortLabel: "Synthetic",
+    bgColor: "bg-slate-500/15",
+    textColor: "text-slate-300",
+    borderColor: "border-slate-500/40",
+    dotColor: "bg-slate-400",
     icon: Database,
-    tooltip: "Data Provenance: Derived from Equinor's Volve open field dataset (North Sea, UK/Norwegian sector), relabeled and calibrated to Upper Assam basin lithology & stress regimes."
+    tooltip: "Data Provenance: Generated well, log and event data, calibrated to Upper Assam (Assam-Arakan) stratigraphy and stress regime. NOT real well data and NOT derived from any public dataset — no Equinor Volve or FORCE 2020 data was used. The two real, cited Indian incidents are the exception and carry their own Verified badge."
   },
-  force2020_relabeled: {
-    label: "FORCE 2020",
-    shortLabel: "FORCE20",
-    bgColor: "bg-cyan-500/15",
-    textColor: "text-cyan-300",
-    borderColor: "border-cyan-500/40",
-    dotColor: "bg-cyan-400",
-    icon: ShieldCheck,
-    tooltip: "Data Provenance: Derived from the industry-standard FORCE 2020 Machine Learning Competition well log benchmark, calibrated to regional sandstone/shale sequences."
-  },
+  // The `force2020_relabeled` entry was removed rather than relabelled. It claimed the
+  // FORCE 2020 log benchmark, which was never used, and it masked a second problem:
+  // every badge in this file is assigned by *well-name string matching* (see
+  // getWellDataSource) rather than by any recorded data lineage. The values below are
+  // therefore descriptions of how a well was calibrated, not records of where its data
+  // came from — which is why the tooltips now say "calibrated to", never "derived from".
   synthetic: {
     label: "Synthetic Calibrated",
     shortLabel: "Synthetic",
@@ -59,6 +61,16 @@ export const SOURCE_CONFIGS = {
     dotColor: "bg-rose-400",
     icon: AlertCircle,
     tooltip: "Data Provenance: Subsurface geological reference model for exploratory basin wells."
+  },
+  incident_report_real: {
+    label: "Real Incident Record",
+    shortLabel: "Verified",
+    bgColor: "bg-teal-500/15",
+    textColor: "text-teal-200",
+    borderColor: "border-teal-400/50",
+    dotColor: "bg-teal-400",
+    icon: ShieldCheck,
+    tooltip: "Data Provenance: A real, publicly documented Indian drilling incident. Depth, root cause and mitigation are quoted from published sources (NGT Baghjan Expert Committee; OISD; SPE-206602-MS) — nothing in this record is generated."
   }
 };
 
@@ -66,8 +78,16 @@ export const SOURCE_CONFIGS = {
  * Resolves the data provenance classification key for any given well ID or raw data source label.
  */
 export const getWellDataSource = (wellIdOrSource) => {
-  if (!wellIdOrSource) return "volve_relabeled";
+  if (!wellIdOrSource) return "synthetic_calibrated";
   const str = String(wellIdOrSource).toLowerCase().trim();
+
+  // Checked FIRST, and on the exact key. Everything below this line is a
+  // well-name heuristic, and the final `return` is a catch-all — so without this
+  // branch a real incident record falls through to "Volve (Relabeled)", which is
+  // the one label that would be flatly false about it.
+  if (str.includes("incident_report")) {
+    return "incident_report_real";
+  }
 
   // Regional expansion wells (Rajasthan, KG Deepwater, Mizoram) are illustrative only
   if (
@@ -98,20 +118,29 @@ export const getWellDataSource = (wellIdOrSource) => {
     return "regional_calibrated";
   }
 
+  // "nahar" used to be tagged FORCE 2020. No FORCE 2020 data was ever used — the
+  // tag was assigned by well-name string matching, not by data lineage — so those
+  // wells get the same honest label as the rest of the seeded corpus.
   if (str.includes("nahar") || str.includes("force")) {
-    return "force2020_relabeled";
+    return "synthetic_calibrated";
   }
 
-  if (str.includes("dikom") || str.includes("baghjan-4") || str.includes("synth")) {
+  if (str.includes("dikom") || str.includes("baghjan-4") || str.includes("baghjan-5") || str.includes("synth")) {
     return "synthetic";
   }
 
-  return "volve_relabeled";
+  return "synthetic_calibrated";
 };
+
+// Legacy keys kept as aliases: rows in the database and values baked into older
+// builds still carry these names, and they must resolve to the corrected labels
+// rather than fall through to the catch-all.
+SOURCE_CONFIGS.volve_relabeled = SOURCE_CONFIGS.synthetic_calibrated;
+SOURCE_CONFIGS.force2020_relabeled = SOURCE_CONFIGS.synthetic_calibrated;
 
 const SourceTag = ({ source, compact = false, showIcon = true, className = "" }) => {
   const normalizedKey = getWellDataSource(source);
-  const config = SOURCE_CONFIGS[normalizedKey] || SOURCE_CONFIGS.volve_relabeled;
+  const config = SOURCE_CONFIGS[normalizedKey] || SOURCE_CONFIGS.synthetic_calibrated;
   const Icon = config.icon;
 
   return (

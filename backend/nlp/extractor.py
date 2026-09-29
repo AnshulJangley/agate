@@ -1,4 +1,5 @@
 import logging
+import re
 from typing import List, Optional
 from pydantic import BaseModel, Field
 from langchain_core.prompts import ChatPromptTemplate
@@ -14,7 +15,15 @@ logger = logging.getLogger(__name__)
 
 class DrillingIncidentSchema(BaseModel):
     event_type: str = Field(
-        description="E.g., 'Stuck Pipe (Mechanical)', 'Stuck Pipe (Differential)', 'Severe Mud Loss', 'Gas Kick', 'Tight Hole', 'Equipment Failure', 'Casing/Cementing Operation'"
+        description=(
+            "E.g., 'Stuck Pipe (Mechanical)', 'Stuck Pipe (Differential)', 'Severe Mud Loss', "
+            "'Gas Kick', 'Tight Hole', 'Equipment Failure', 'Casing/Cementing Operation', "
+            "'Cement Plug Failure', 'Gas Migration Through Cement', 'Overpressure Zone', "
+            "'Torque Spike', 'Fishing Operation', 'Overshot Run', 'Lost In Hole'. "
+            "The problem statement names mud losses, stuck pipe, overpressure, torque spikes and "
+            "cementing issues as the risks of interest, and lists fishing operations among the "
+            "historical event records — so name the specific failure, not a generic 'Drilling Problem'."
+        )
     )
     depth_tvd: Optional[float] = Field(
         description="Estimated or exact True Vertical Depth in meters", 
@@ -234,16 +243,175 @@ def _rule_based_fallback_extraction(text: str) -> List[DrillingIncidentSchema]:
         
     return incidents
 
+# -------------------------------------------------------------------
+# Document typing
+# -------------------------------------------------------------------
+
+# The ingest pipeline stamped every upload `doc_type="ddr"`, so a Well Completion
+# Report — the first data source the problem statement names — was filed, stored and
+# displayed as a Daily Drilling Report. The two carry different content: a DDR is a
+# chronological operations log, a WCR is a retrospective completion summary with the
+# casing, cementing and perforation record.
+DOC_TYPE_HEADERS = (
+    ("wcr", ("well completion report", "completion report", "well completion")),
+    ("ddr", ("daily drilling report", "drilling report summary")),
+    ("mud_log", ("mud log", "mud logging report", "mud logging")),
+    ("program", ("drilling program", "casing program", "cementing program", "mud program")),
+)
+
+
+def detect_doc_type(filename: Optional[str] = None, text: Optional[str] = None) -> str:
+    """
+    Classify an uploaded document as ddr / wcr / mud_log / program / unknown.
+
+    The filename is checked first and wins when the two disagree. That is deliberate:
+    a WCR routinely quotes the daily drilling reports it summarises, so a keyword scan
+    over the body alone would type a completion report as a drilling report.
+
+    Returns "unknown" when neither signal is present. It does **not** fall back to
+    "ddr" — mislabelling an unrecognised document as a Daily Drilling Report is how
+    the original bug hid, and an honest "unknown" is what makes it visible.
+    """
+    name = str(filename or "").lower()
+    head = " ".join(str(text or "")[:3000].split()).lower()
+
+    if "wcr" in name or "completion" in name:
+        return "wcr"
+    if "ddr" in name or "daily" in name:
+        return "ddr"
+    if "mudlog" in name or "mud_log" in name or "mud log" in name:
+        return "mud_log"
+    if "program" in name:
+        return "program"
+
+    # Earliest mention wins, not first tuple that matches. A document titles itself at
+    # the top, so a Daily Drilling Report that later quotes "the Well Completion Report
+    # of the offset wells" is still a DDR — checking the tuples in a fixed order typed
+    # it as a WCR because "wcr" happened to come first in the list.
+    best_type: Optional[str] = None
+    best_pos: Optional[int] = None
+    for doc_type, headers in DOC_TYPE_HEADERS:
+        for header in headers:
+            pos = head.find(header)
+            if pos != -1 and (best_pos is None or pos < best_pos):
+                best_type, best_pos = doc_type, pos
+
+    return best_type or "unknown"
+
+
+# -------------------------------------------------------------------
+# Formation canonicalisation
+# -------------------------------------------------------------------
+
+# Real Upper Assam-Arakan (and KG) formation names. The extractors return
+# whatever the report wrote — "Barail Formation", "Upper Tipam Sandstone",
+# "Kopili Marine Shale" — and left raw that split one formation across several
+# nodes in the knowledge graph (`Barail` and `Barail Formation` both existed) and
+# depressed formation-match scoring in hybrid retrieval, since the lexical half
+# compares these strings literally.
+CANONICAL_FORMATIONS = (
+    "Tipam", "Girujan", "Namsang", "Barail", "Kopili",
+    "Sylhet", "Langpar", "Narpuh", "Rajahmundry", "Razole",
+)
+
+_FORMATION_SUFFIXES = (
+    " formation", " member", " group", " sandstone", " shale", " limestone",
+    " siltstone", " claystone", " sand", " sequence",
+)
+
+
+def normalize_formation(raw: Optional[str]) -> Optional[str]:
+    """
+    Collapse a formation descriptor to its canonical name.
+
+    Canonical match first, so "Upper Tipam Sandstone" resolves to Tipam rather
+    than being trimmed to "Upper Tipam". Trimming is the fallback for a formation
+    outside the vocabulary, and exists so an unseen name still collapses to one
+    node instead of accumulating a variant per qualifier.
+
+    An absent formation stays absent. Coercing it to a string would invent a
+    formation named "Unknown" and hang every unrecorded event off it — the
+    Pasarlapudi record genuinely has no formation in the public source, and the
+    honest representation of that is NULL, not a label.
+    """
+    if raw is None:
+        return None
+
+    text = " ".join(str(raw).split())
+    if not text:
+        return None
+
+    lowered = text.lower()
+
+    for name in CANONICAL_FORMATIONS:
+        if name.lower() in lowered:
+            return name
+
+    for suffix in _FORMATION_SUFFIXES:
+        if lowered.endswith(suffix):
+            text = text[: -len(suffix)]
+            break
+
+    return text.strip() or None
+
+
+def incident_signature(incident: "DrillingIncidentSchema") -> tuple:
+    """
+    Identity key used to drop an incident that two overlapping chunks both yielded.
+
+    Parenthetical sub-types are stripped from `event_type` so that "Gas Kick" and
+    "Gas Kick (Formation Influx)" describe the same event, and depth is bucketed to
+    10 m because extraction depth is approximate. The root cause is included (and
+    NOT normalised to a category) so two genuinely different incidents at the same
+    depth are never merged — only true restatements collapse.
+    """
+    event_type = re.sub(r"\(.*?\)", " ", incident.event_type or "")
+    event_type = " ".join(event_type.split()).lower()
+
+    depth = incident.depth_tvd
+    depth_key = None if depth is None else round(float(depth) / 10.0) * 10
+
+    cause = " ".join((incident.root_cause or "").split()).lower()[:160]
+
+    return (event_type, incident.formation or "", depth_key, cause)
+
+
 def extract_incidents_from_chunks(chunks: List[str]) -> List[DrillingIncidentSchema]:
     """
     Batch handling to iterate through all text chunks from a document.
+
+    De-duplicated, and formations are canonicalised, because chunking guarantees
+    overlap: `create_operational_chunks` splits on section boundaries, but a single
+    incident narrative regularly mentions the same event in a summary block and
+    again in its detail block. Both chunks yield the incident and the old code
+    appended both, which is how `synthetic_event` ended up holding two byte-identical
+    rows for the same Tengakhat gas kick at 2,425 m.
     """
-    all_incidents = []
+    all_incidents: List[DrillingIncidentSchema] = []
+    seen: set[tuple] = set()
+    duplicates = 0
+
     for idx, chunk in enumerate(chunks):
         logger.info(f"Processing chunk {idx + 1}/{len(chunks)} for incident extraction...")
         incidents = extract_incidents_from_text(chunk)
-        if incidents:
-            logger.info(f"Found {len(incidents)} incidents in chunk {idx + 1}.")
-            all_incidents.extend(incidents)
-            
+        if not incidents:
+            continue
+
+        logger.info(f"Found {len(incidents)} incidents in chunk {idx + 1}.")
+        for incident in incidents:
+            incident.formation = normalize_formation(incident.formation)
+            signature = incident_signature(incident)
+            if signature in seen:
+                duplicates += 1
+                logger.info(
+                    f"  dropped duplicate incident: {incident.event_type} @ "
+                    f"{incident.depth_tvd}m {incident.formation}"
+                )
+                continue
+            seen.add(signature)
+            all_incidents.append(incident)
+
+    if duplicates:
+        logger.info(f"Removed {duplicates} duplicate incident(s) across chunk overlap.")
+
     return all_incidents

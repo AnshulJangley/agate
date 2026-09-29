@@ -1,5 +1,4 @@
 import os
-import threading
 
 # ---------------------------------------------------------------------------
 # Multi-Provider LLM Configuration (Gemini, Claude, OpenAI, Ollama)
@@ -8,7 +7,7 @@ LLM_PROVIDER = os.getenv("LLM_PROVIDER", "auto")
 
 # Google Gemini
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
-GEMINI_MODEL_NAME = os.getenv("GEMINI_MODEL_NAME", "gemini-1.5-flash")
+GEMINI_MODEL_NAME = os.getenv("GEMINI_MODEL_NAME", "gemini-flash-latest")
 
 # Anthropic Claude
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY") or os.getenv("CLAUDE_API_KEY")
@@ -28,47 +27,37 @@ LLM_API_KEY = os.getenv("LLM_API_KEY", "your-api-key-here")
 LLM_ENDPOINT = os.getenv("LLM_ENDPOINT", OLLAMA_ENDPOINT)
 LLM_MODEL_NAME = os.getenv("LLM_MODEL_NAME", "llama3")
 
-embedding_model = None
-_embedding_lock = threading.Lock()
+# ---------------------------------------------------------------------------
+# Embeddings
+# ---------------------------------------------------------------------------
+# The embedder is a remote provider (Gemini) resolved by nlp.embeddings, not a
+# local model. It replaces the previous in-process fastembed BGE-small path,
+# which pinned every vector to 384 dimensions. The configured width now lives
+# in one place (EMBEDDING_DIM, default 768) and is asserted by the service.
+from nlp.embeddings import (  # noqa: E402
+    EmbeddingService,
+    get_embedding_dim,
+    get_embedding_status,
+    _pseudo_embedding,
+)
 
-def _pseudo_embedding(text: str, dim: int = 384) -> list[float]:
-    """Deterministic hash-based offline embedding surrogate (384 dimensions)."""
-    import hashlib
-    import math
-    tokens = text.lower().split()
-    vec = [0.0] * dim
-    for i, token in enumerate(tokens):
-        h = int(hashlib.md5(token.encode('utf-8')).hexdigest(), 16)
-        idx = h % dim
-        vec[idx] += 1.0 / (1.0 + math.log(i + 1))
-    norm = math.sqrt(sum(x * x for x in vec)) or 1.0
-    return [round(x / norm, 6) for x in vec]
 
 def get_embedding(text: str) -> list[float]:
     """
-    Helper function to generate embeddings using fastembed.
-    Lazy-loaded on first call to prevent OOM on memory-constrained servers.
-    Falls back gracefully to deterministic pseudo-embedding if offline.
+    Generates an embedding for ``text`` via the configured remote provider.
+
+    Lazily initialises on first call. Falls back to a deterministic local
+    surrogate when no provider is available, so callers never have to handle
+    an exception — but the surrogate carries no semantic meaning, so the
+    similarity scores it produces are meaningless beyond lexical overlap.
     """
-    global embedding_model
-    if embedding_model is None:
-        with _embedding_lock:
-            if embedding_model is None:
-                try:
-                    from fastembed import TextEmbedding  # type: ignore
-                    cache_dir = os.path.join(os.getcwd(), "temp_uploads", "fastembed_cache")
-                    os.makedirs(cache_dir, exist_ok=True)
-                    embedding_model = TextEmbedding(model_name="BAAI/bge-small-en-v1.5", cache_dir=cache_dir)
-                except Exception as e:
-                    import logging
-                    logging.getLogger(__name__).warning(f"Failed to load fastembed model: {e}. Using onboard pseudo-embeddings.")
-                    return _pseudo_embedding(text)
-            
-    try:
-        embeddings = list(embedding_model.embed([text]))
-        return embeddings[0].tolist()
-    except Exception as e:
-        import logging
-        logging.getLogger(__name__).warning(f"Embedding computation failed: {e}. Using onboard pseudo-embeddings.")
-        return _pseudo_embedding(text)
+    return EmbeddingService().embed(text)
+
+
+def get_embeddings(texts: list[str]) -> list[list[float]]:
+    """Batch variant of :func:`get_embedding`, preserving input order."""
+    return EmbeddingService().embed_batch(texts)
+
+
+EMBEDDING_DIM = get_embedding_dim()
 
